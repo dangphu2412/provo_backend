@@ -1,6 +1,6 @@
 ## Description
 
-[Provo backend](https://github.com/nestjs/nest) Provo backend.
+[Provo backend](https://github.com/nestjs/nest).
 
 ## Installation
 
@@ -36,6 +36,6 @@ $ npm run test:cov
 
 ## Stay in touch
 
-- Author - [Jackson Fu]()
+- Author - [Justin Dang]()
 - Facebook - [https://www.facebook.com/profile.php?id=100010295231002](https://www.facebook.com/profile.php?id=100010295231002)
 

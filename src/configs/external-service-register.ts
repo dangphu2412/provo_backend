@@ -9,7 +9,7 @@ export class ExternalModuleRegister {
       MongooseModule.forRootAsync({
         imports: [ConfigModule],
         useFactory: async (configService: ConfigService) => ({
-          uri: configService.get('MONGODB_URI'),
+          uri: configService.get('MONGO_URI'),
         }),
         inject: [ConfigService],
       }),

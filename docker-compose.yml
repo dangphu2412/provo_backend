@@ -1,0 +1,32 @@
+version: '3'
+services:
+  gateway:
+    container_name: provo_backend
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:3000"
+    networks:
+      - internal_provo
+
+  mongo:
+    container_name: provo_mongo
+    image: mongo:5.0.7
+    env_file:
+      - .env
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    networks:
+      - internal_provo
+    volumes:
+      - hostPath:containerPath:rw
+        hostPath:./data
+        containerPath:/data/db
+
+volumes:
+  data:

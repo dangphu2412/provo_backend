@@ -2,7 +2,7 @@
   "name": "provo-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Justin Dang",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -26,6 +26,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/platform-express": "^8.0.0",
+    "dayjs": "^1.11.1",
     "mongoose": "^6.3.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
