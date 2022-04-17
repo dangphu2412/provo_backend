@@ -25,7 +25,7 @@ export class AuthServiceImpl implements AuthService {
     }
 
     return {
-      accessToken: this.jwtService.sign(googleUser, { expiresIn: '10h' }),
+      accessToken: this.jwtService.sign(user, { expiresIn: '10h' }),
       refreshToken: this.jwtService.sign({}, { expiresIn: '10d' }),
       name: googleUser.fullName,
     };
