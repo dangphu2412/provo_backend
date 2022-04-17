@@ -1,8 +1,9 @@
 import { ExternalModuleRegister } from '@config/external-service-register';
 import { Module } from '@nestjs/common';
-import { UsersModule } from './clients/users/users.module';
+import { UserModule } from './clients/user/user.module';
+import { AuthModule } from './clients/auth/auth.module';
 
 @Module({
-  imports: [...ExternalModuleRegister.register(), UsersModule],
+  imports: [...ExternalModuleRegister.register(), UserModule, AuthModule],
 })
 export class AppModule {}

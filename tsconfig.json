@@ -23,6 +23,18 @@
       ],
       "@config/*": [
         "./src/configs/*"
+      ],
+      "@auth-client/*": [
+        "./src/clients/auth/*"
+      ],
+      "@auth/*": [
+        "./src/modules/auth/*"
+      ],
+      "@user-client/*": [
+        "./src/clients/user/*"
+      ],
+      "@user/*": [
+        "./src/modules/user/*"
       ]
     }
   },

@@ -1,0 +1,17 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Mutation {
+  loginByGoogleAccessToken(idToken: String!): UserCredential!
+}
+
+type Query {
+  sayHello: String!
+}
+
+type UserCredential {
+  accessToken: String!
+  name: String!
+  refreshToken: String!
+}

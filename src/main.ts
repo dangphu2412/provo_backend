@@ -1,7 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { extractOrigins, logAppDetail } from './utils/app-bootstrap.util';
+import { extractOrigins, logScaffoldApp } from './utils/app-bootstrap.util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,6 +12,6 @@ async function bootstrap() {
 
   await app.listen(app.get(ConfigService).get('PORT'));
 
-  logAppDetail(app);
+  logScaffoldApp(app);
 }
 bootstrap();
