@@ -2,17 +2,32 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateVocabDto {
+  definition: String!
+  examples: [String!]!
+  word: String!
+}
+
 type Mutation {
+  createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
   getTestCredential: UserCredential!
   loginByGoogleAccessToken(idToken: String!): UserCredential!
 }
 
 type Query {
   sayHello: String!
+  searchVocabularies(text: String!): [VocabularyType!]!
 }
 
 type UserCredential {
   accessToken: String!
   name: String!
   refreshToken: String!
+}
+
+type VocabularyType {
+  _id: String!
+  definition: String!
+  examples: [String!]!
+  word: String!
 }

@@ -26,7 +26,7 @@ export class GoogleAuthenticatorImpl implements GoogleAuthenticator {
     );
 
     this.oAuth2Client = new OAuth2Client(appClientId);
-    this.audienceClientIds = EnvLoaderUtils.load(rawAudienceClientIds);
+    this.audienceClientIds = EnvLoaderUtils.loadMany(rawAudienceClientIds);
   }
 
   public async verify(idToken: string): Promise<GoogleUser> {

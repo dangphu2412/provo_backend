@@ -7,7 +7,7 @@ export function extractOrigins(rawConfigString: string) {
   if (!rawConfigString) {
     return ALLOW_ALL_ORIGINS;
   }
-  return EnvLoaderUtils.load(rawConfigString);
+  return EnvLoaderUtils.loadMany(rawConfigString);
 }
 
 export function logScaffoldApp(app: INestApplication) {

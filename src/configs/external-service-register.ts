@@ -14,6 +14,7 @@ export class ExternalModuleRegister {
         inject: [ConfigService],
         useFactory: async (configService: ConfigService) => ({
           uri: configService.get('MONGO_URI'),
+          autoIndex: true,
         }),
       }),
       GraphQLModule.forRootAsync<ApolloDriverConfig>({

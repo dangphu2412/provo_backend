@@ -35,6 +35,12 @@
       ],
       "@user/*": [
         "./src/modules/user/*"
+      ],
+      "@vocabulary-client/*": [
+        "./src/clients/vocabulary/*"
+      ],
+      "@vocabulary/*": [
+        "./src/modules/vocabulary/*"
       ]
     }
   },

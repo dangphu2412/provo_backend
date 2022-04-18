@@ -1,5 +1,5 @@
 export class EnvLoaderUtils {
-  public static load(rawConfigString: string) {
+  public static loadMany(rawConfigString: string) {
     return rawConfigString.trim().split(',');
   }
 }
