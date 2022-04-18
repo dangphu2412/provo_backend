@@ -5,4 +5,5 @@ export const AuthServiceToken = 'AuthService';
 
 export interface AuthService {
   loginByGoogleUser(googleUser: GoogleUser): Promise<UserCredential>;
+  mockLoginByGoogleUser(): Promise<UserCredential>;
 }

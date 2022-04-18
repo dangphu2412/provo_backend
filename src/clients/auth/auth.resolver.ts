@@ -24,4 +24,9 @@ export class AuthResolver {
 
     return this.authService.loginByGoogleUser(googleUser);
   }
+
+  @Mutation(() => UserCredential)
+  getTestCredential(): Promise<UserCredential> {
+    return this.authService.mockLoginByGoogleUser();
+  }
 }

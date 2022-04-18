@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserServiceToken } from '@user-client/user.service';
@@ -47,6 +48,8 @@ describe('AuthService', () => {
       name: '',
     };
     const mockUser: User = new User();
+    mockUser._id = new Types.ObjectId();
+    mockUser.name = '';
 
     jest.spyOn(userService, 'findByEmail').mockImplementation((_) => {
       return Promise.resolve(mockUser);
