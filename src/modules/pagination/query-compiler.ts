@@ -11,12 +11,12 @@ export async function compile<M, T extends PaginationArgs>(
   model: Model<M>,
   paginationArgs: T,
 ): Promise<GraphqlConnection<M>> {
-  // if (!(paginationArgs instanceof PaginationArgs)) {
-  //   throw new Error('paginationArgs must be instance of PaginationArgs');
-  // }
   const cursorGenerator = new CursorGenerator();
+
   const query = model.find().lean();
   const countQuery = query.clone();
+
+  let limitToFindNextCursor: number;
 
   if (paginationArgs.first) {
     if (paginationArgs.after) {
@@ -27,15 +27,16 @@ export async function compile<M, T extends PaginationArgs>(
     }
 
     const limit = paginationArgs.first ?? configStorage.getDefaultLimit();
-    query.limit(limit);
+    limitToFindNextCursor = limit + 1;
+    query.limit(limitToFindNextCursor);
   } else if (paginationArgs.last && paginationArgs.before) {
     const offsetId = new Types.ObjectId(
       cursorGenerator.parse(paginationArgs.before),
     );
 
     const limit = paginationArgs.last ?? configStorage.getDefaultLimit();
-
-    query.where({ _id: { $lt: offsetId } }).limit(limit);
+    limitToFindNextCursor = limit + 1;
+    query.where({ _id: { $lt: offsetId } }).limit(limitToFindNextCursor);
   }
 
   const result = await query;
@@ -46,10 +47,10 @@ export async function compile<M, T extends PaginationArgs>(
   const totalCount = await countQuery.count();
   const pageInfo = new PageInfo();
 
-  pageInfo.hasNextPage = true;
-  pageInfo.hasNextPage = false;
-  pageInfo.endCursor = '';
-  pageInfo.startCursor = '';
+  pageInfo.hasNextPage = edges.length === limitToFindNextCursor;
+  pageInfo.hasPreviousPage = !!paginationArgs.after; // TODO: Need to verify the previous data of the cursor when edges length = 0
+  pageInfo.startCursor = edges.length > 0 ? edges[0].cursor : null;
+  pageInfo.endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
 
   return {
     edges,
