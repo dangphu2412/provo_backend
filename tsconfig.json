@@ -41,6 +41,9 @@
       ],
       "@vocabulary/*": [
         "./src/modules/vocabulary/*"
+      ],
+      "@pagination/*": [
+        "./src/modules/pagination/*"
       ]
     }
   },

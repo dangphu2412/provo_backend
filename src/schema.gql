@@ -14,9 +14,16 @@ type Mutation {
   loginByGoogleAccessToken(idToken: String!): UserCredential!
 }
 
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 type Query {
   sayHello: String!
-  searchVocabularies(text: String!): [VocabularyType!]!
+  searchVocabularies(after: String, before: String, first: Int, last: Int, search: String): VocabularyConnection!
 }
 
 type UserCredential {
@@ -25,9 +32,20 @@ type UserCredential {
   refreshToken: String!
 }
 
+type VocabularyConnection {
+  edges: [VocabularyTypeEdge!]
+  pageInfo: PageInfo
+  totalCount: Float
+}
+
 type VocabularyType {
   _id: String!
   definition: String!
   examples: [String!]!
   word: String!
+}
+
+type VocabularyTypeEdge {
+  cursor: String!
+  node: VocabularyType!
 }

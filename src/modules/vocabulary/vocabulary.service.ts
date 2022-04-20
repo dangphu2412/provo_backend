@@ -1,7 +1,13 @@
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { GraphqlConnection } from '@pagination/pagination';
+import { compile } from '@pagination/query-compiler';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
-import { Vocabulary } from '@vocabulary-client/vocabulary.model';
+import { VocabularyArgs } from '@vocabulary-client/dto/vocabulary.arg';
+import {
+  Vocabulary,
+  VocabularyDocument,
+} from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { Model } from 'mongoose';
 
@@ -12,17 +18,15 @@ export class VocabularyServiceImpl implements VocabularyService {
 
   constructor(
     @InjectModel(Vocabulary.name)
-    private readonly vocabularyModel: Model<Vocabulary>,
+    private readonly vocabularyModel: Model<VocabularyDocument>,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
 
-  async search(text: string): Promise<Vocabulary[]> {
-    return await this.vocabularyModel.find({
-      $text: {
-        $search: text,
-      },
-    });
+  async search(
+    args: VocabularyArgs,
+  ): Promise<GraphqlConnection<VocabularyDocument>> {
+    return compile(this.vocabularyModel, args);
   }
 
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {

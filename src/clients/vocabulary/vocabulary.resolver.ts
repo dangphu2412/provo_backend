@@ -1,11 +1,12 @@
+import { Inject } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { CreateVocabDto } from './dto/create-vocab.dto';
+import { VocabularyConnection } from './dto/vocabulary-connection';
+import { VocabularyArgs } from './dto/vocabulary.arg';
 import {
   VocabularyService,
   VocabularyServiceToken,
 } from './vocabulary.service';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Inject } from '@nestjs/common';
-import { CreateVocabDto } from './dto/create-vocab.dto';
-import { VocabularyType } from './dto/vocabulary.type';
 
 @Resolver()
 export class VocabularyResolver {
@@ -14,9 +15,11 @@ export class VocabularyResolver {
     private readonly vocabularyService: VocabularyService,
   ) {}
 
-  @Query(() => [VocabularyType])
-  searchVocabularies(@Args('text') text: string) {
-    return this.vocabularyService.search(text);
+  @Query(() => VocabularyConnection)
+  searchVocabularies(
+    @Args() args: VocabularyArgs,
+  ): Promise<VocabularyConnection> {
+    return this.vocabularyService.search(args);
   }
 
   @Mutation(() => Boolean, { nullable: true })
@@ -28,6 +31,5 @@ export class VocabularyResolver {
     createVocabulariesDto: CreateVocabDto[],
   ) {
     await this.vocabularyService.createMany(createVocabulariesDto);
-    return;
   }
 }
