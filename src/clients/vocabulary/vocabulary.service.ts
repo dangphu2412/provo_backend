@@ -1,4 +1,4 @@
-import { GraphqlConnection } from '@pagination/pagination';
+import { GraphqlConnection } from '@pagination/connection.factory';
 import { CreateVocabDto } from './dto/create-vocab.dto';
 import { VocabularyArgs } from './dto/vocabulary.arg';
 import { VocabularyDocument } from './vocabulary.model';

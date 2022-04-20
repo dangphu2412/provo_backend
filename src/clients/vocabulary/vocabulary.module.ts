@@ -4,12 +4,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Vocabulary, VocabularySchema } from './vocabulary.model';
 import { VocabularyServiceImpl } from '@vocabulary/vocabulary.service';
 import { VocabularyResolver } from './vocabulary.resolver';
+import { PaginationModule } from '@pagination/pagination.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Vocabulary.name, schema: VocabularySchema },
     ]),
+    PaginationModule,
   ],
   providers: [
     VocabularyResolver,

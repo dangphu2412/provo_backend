@@ -34,13 +34,19 @@ export class GoogleAuthenticatorImpl implements GoogleAuthenticator {
 
     const payload = loginTicket.getPayload();
 
+    if (!payload) {
+      throw new UnprocessableEntityException(
+        'Invalid idToken provided. Please check your credentials',
+      );
+    }
+
     this.validateProvidedScopes(payload);
 
     return {
-      email: payload.email,
-      fullName: payload.family_name,
+      email: payload.email as string,
+      fullName: payload.family_name as string,
       sub: payload.sub,
-      avatar: payload.picture,
+      avatar: payload.picture as string,
     };
   }
 
@@ -58,7 +64,11 @@ export class GoogleAuthenticatorImpl implements GoogleAuthenticator {
   }
 
   private validateProvidedScopes(tokenPayload: TokenPayload) {
-    if (!tokenPayload.email || !tokenPayload.family_name) {
+    if (
+      !tokenPayload.email ||
+      !tokenPayload.family_name ||
+      !tokenPayload.picture
+    ) {
       throw new UnprocessableEntityException(
         'IdToken provided is missing scope profile when requested',
       );

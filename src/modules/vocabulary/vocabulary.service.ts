@@ -1,7 +1,7 @@
+import { QueryCompiler } from './../pagination/query-compiler';
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { GraphqlConnection } from '@pagination/pagination';
-import { compile } from '@pagination/query-compiler';
+import { GraphqlConnection } from '@pagination/connection.factory';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import { VocabularyArgs } from '@vocabulary-client/dto/vocabulary.arg';
 import {
@@ -19,6 +19,7 @@ export class VocabularyServiceImpl implements VocabularyService {
   constructor(
     @InjectModel(Vocabulary.name)
     private readonly vocabularyModel: Model<VocabularyDocument>,
+    private readonly queryCompiler: QueryCompiler,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
@@ -26,7 +27,7 @@ export class VocabularyServiceImpl implements VocabularyService {
   async search(
     args: VocabularyArgs,
   ): Promise<GraphqlConnection<VocabularyDocument>> {
-    return compile(this.vocabularyModel, args);
+    return this.queryCompiler.compile(this.vocabularyModel, args);
   }
 
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {

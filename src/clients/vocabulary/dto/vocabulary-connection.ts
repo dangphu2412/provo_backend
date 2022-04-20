@@ -1,5 +1,5 @@
 import { ObjectType } from '@nestjs/graphql';
-import { createConnection } from '@pagination/pagination';
+import { createConnection } from '@pagination/connection.factory';
 import { VocabularyType } from './vocabulary.type';
 
 @ObjectType()

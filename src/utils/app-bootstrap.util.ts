@@ -2,7 +2,7 @@ import { INestApplication, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EnvLoaderUtils } from './env-loader.util';
 
-export function extractOrigins(rawConfigString: string) {
+export function extractOrigins(rawConfigString: string | undefined) {
   const ALLOW_ALL_ORIGINS = '*';
   if (!rawConfigString) {
     return ALLOW_ALL_ORIGINS;

@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Type } from '@nestjs/common';
-import { PageInfo } from './page-info';
+import { PageInfo } from './dto/page-info';
 
 export interface EdgeType<T> {
   cursor: string;

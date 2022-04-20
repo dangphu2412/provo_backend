@@ -1,5 +1,6 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
-import { IsBase64, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
+import { IsCursor } from '../decorator/is-cursor';
 
 @ArgsType()
 export class PaginationArgs {
@@ -8,7 +9,7 @@ export class PaginationArgs {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsBase64()
+  @IsCursor()
   after?: string;
 
   @Field(() => Int, { nullable: true })
@@ -16,6 +17,6 @@ export class PaginationArgs {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsBase64()
+  @IsCursor()
   before?: string;
 }

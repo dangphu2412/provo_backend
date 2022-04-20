@@ -1,9 +1,18 @@
-import { DynamicModule } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { PaginationConfig } from './config-storage';
 import { PaginationContainer } from './pagination.container';
+import { QueryCompiler } from './query-compiler';
+import { CursorTransformation } from './transformation/cursor-transformation';
+import { TransformationType } from './transformation/transformation-type.enum';
 
-export type PaginationModuleOptions = Partial<PaginationConfig>;
+export interface PaginationModuleOptions extends Partial<PaginationConfig> {
+  transformationType?: TransformationType;
+}
 
+@Module({
+  providers: [CursorTransformation, QueryCompiler],
+  exports: [QueryCompiler],
+})
 export class PaginationModule {
   public static forFeature(options?: PaginationModuleOptions): DynamicModule {
     const DEFAULT_LIMIT = 20;
@@ -21,6 +30,9 @@ export class PaginationModule {
       if (options.defaultOffset) {
         configStore.setDefaultOffset(options.defaultOffset);
       }
+      configStore.setTransformationType(
+        options.transformationType ?? TransformationType.BASE_64,
+      );
     }
 
     return {
