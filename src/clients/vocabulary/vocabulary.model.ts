@@ -1,7 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type VocabularyDocument = Vocabulary & Document;
+export interface VocabularyDocument extends Document {
+  definition: string;
+  word: string;
+  examples: string[];
+}
 
 @Schema({
   autoIndex: true,

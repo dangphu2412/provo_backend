@@ -1,4 +1,6 @@
-export interface CursorTransformationStrategy {
-  transform(input: string): string;
-  parse(cursor: string): string;
+export const CursorTransformationToken = 'CursorTransformation';
+
+export interface CursorTransformation<I> {
+  transform(input: I): string;
+  parse(cursor: string): I;
 }

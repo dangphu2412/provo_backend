@@ -1,7 +1,5 @@
-import { QueryCompiler } from './../pagination/query-compiler';
-import { Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { GraphqlConnection } from '@pagination/connection.factory';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import { VocabularyArgs } from '@vocabulary-client/dto/vocabulary.arg';
 import {
@@ -10,6 +8,10 @@ import {
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { Model } from 'mongoose';
+import {
+  CursorPaginationBuilderToken,
+  CursorPaginationQueryBuilder,
+} from '../pagination/cursor-pagination.builder';
 
 export class VocabularyServiceImpl implements VocabularyService {
   private static LIMIT_RECORD_PER_INSERT = 100;
@@ -19,15 +21,37 @@ export class VocabularyServiceImpl implements VocabularyService {
   constructor(
     @InjectModel(Vocabulary.name)
     private readonly vocabularyModel: Model<VocabularyDocument>,
-    private readonly queryCompiler: QueryCompiler,
+    @Inject(CursorPaginationBuilderToken)
+    private readonly cursorPaginationQueryBuilder: CursorPaginationQueryBuilder,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
 
-  async search(
-    args: VocabularyArgs,
-  ): Promise<GraphqlConnection<VocabularyDocument>> {
-    return this.queryCompiler.compile(this.vocabularyModel, args);
+  async search(args: VocabularyArgs) {
+    const query = this.vocabularyModel
+      .find<VocabularyDocument>(
+        args.search
+          ? {
+              $text: {
+                $search: args.search,
+              },
+            }
+          : {},
+      )
+      .lean();
+
+    const [result, totalCount] = await Promise.all([
+      this.cursorPaginationQueryBuilder.build(query, args),
+      query.clone().count(),
+    ]);
+
+    const edges = this.cursorPaginationQueryBuilder.buildEdges(result);
+
+    return this.cursorPaginationQueryBuilder.buildConnection({
+      edges,
+      paginationArgs: args,
+      totalCount,
+    });
   }
 
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {

@@ -11,7 +11,7 @@ export interface GraphqlConnection<T> {
 
   pageInfo: PageInfo;
 
-  totalCount: number;
+  totalCount: number | undefined;
 }
 /**
  * Based on https://docs.nestjs.com/graphql/resolvers#generics
@@ -39,7 +39,7 @@ export function createConnection<T>(
     pageInfo: PageInfo;
 
     @Field(() => Number, { nullable: true })
-    totalCount: number;
+    totalCount: number | undefined;
   }
   return AbstractConnection as Type<GraphqlConnection<T>>;
 }

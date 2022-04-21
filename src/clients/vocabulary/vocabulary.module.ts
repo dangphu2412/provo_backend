@@ -1,17 +1,15 @@
-import { VocabularyServiceToken } from './vocabulary.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Vocabulary, VocabularySchema } from './vocabulary.model';
 import { VocabularyServiceImpl } from '@vocabulary/vocabulary.service';
+import { Vocabulary, VocabularySchema } from './vocabulary.model';
 import { VocabularyResolver } from './vocabulary.resolver';
-import { PaginationModule } from '@pagination/pagination.module';
+import { VocabularyServiceToken } from './vocabulary.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Vocabulary.name, schema: VocabularySchema },
     ]),
-    PaginationModule,
   ],
   providers: [
     VocabularyResolver,

@@ -1,20 +1,11 @@
-import { TransformationType } from '../transformation/transformation-type.enum';
 import {
-  ValidationOptions,
-  registerDecorator,
   isBase64,
+  registerDecorator,
   ValidationArguments,
+  ValidationOptions,
 } from 'class-validator';
-import { PaginationContainer } from '../pagination.container';
 
 export function IsCursor(validationOptions?: ValidationOptions) {
-  const typeToValidator: Record<
-    TransformationType,
-    (value: unknown) => boolean
-  > = {
-    [TransformationType.BASE_64]: isBase64,
-  };
-  const configStore = PaginationContainer.getConfigStore();
   // eslint-disable-next-line @typescript-eslint/ban-types -- Method decorator using Object as the main type
   return function (target: Object, propertyName: string): void {
     registerDecorator({
@@ -24,8 +15,7 @@ export function IsCursor(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(value: any) {
-          const transformationType = configStore.getTransformationType();
-          return typeToValidator[transformationType](value);
+          return isBase64(value);
         },
         defaultMessage(validationArguments?: ValidationArguments) {
           return `${

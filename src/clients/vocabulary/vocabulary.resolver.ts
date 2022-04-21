@@ -16,9 +16,7 @@ export class VocabularyResolver {
   ) {}
 
   @Query(() => VocabularyConnection)
-  async searchVocabularies(
-    @Args() args: VocabularyArgs,
-  ): Promise<VocabularyConnection> {
+  async searchVocabularies(@Args() args: VocabularyArgs) {
     return this.vocabularyService.search(args);
   }
 
