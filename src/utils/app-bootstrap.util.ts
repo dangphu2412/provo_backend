@@ -14,6 +14,11 @@ export function logScaffoldApp(app: INestApplication) {
   const logger: Logger = new Logger('AppBootstrap');
   const configService: ConfigService = app.get(ConfigService);
 
+  logger.log(
+    `Application is allowing origins: ${extractOrigins(
+      configService.get('CORS_ORIGINS'),
+    ).toString()}`,
+  );
   logger.log(`Application is running on port ${configService.get('PORT')}`);
   logger.log(`Application is running in ${configService.get('NODE_ENV')} mode`);
   logger.log(

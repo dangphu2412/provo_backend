@@ -7,9 +7,7 @@ export interface VocabularyDocument extends Document {
   examples: string[];
 }
 
-@Schema({
-  autoIndex: true,
-})
+@Schema()
 export class Vocabulary {
   _id: Types.ObjectId;
 
@@ -19,7 +17,6 @@ export class Vocabulary {
   @Prop({
     type: String,
     index: 'text',
-    unique: true,
   })
   word: string;
 

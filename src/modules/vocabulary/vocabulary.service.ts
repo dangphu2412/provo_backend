@@ -40,9 +40,11 @@ export class VocabularyServiceImpl implements VocabularyService {
       )
       .lean();
 
+    const countQuery = query.clone().count();
+
     const [result, totalCount] = await Promise.all([
       this.cursorPaginationQueryBuilder.build(query, args),
-      query.clone().count(),
+      countQuery,
     ]);
 
     const edges = this.cursorPaginationQueryBuilder.buildEdges(result);

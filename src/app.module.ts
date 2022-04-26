@@ -4,6 +4,7 @@ import { UserModule } from './clients/user/user.module';
 import { AuthModule } from './clients/auth/auth.module';
 import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import { PaginationModule } from '@pagination/pagination.module';
+import { ExcelModule } from './clients/excel/excel.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PaginationModule } from '@pagination/pagination.module';
     UserModule,
     AuthModule,
     VocabularyModule,
+    ExcelModule,
   ],
 })
 export class AppModule {}

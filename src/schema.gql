@@ -12,6 +12,7 @@ type Mutation {
   createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
   getTestCredential: UserCredential!
   loginByGoogleAccessToken(idToken: String!): UserCredential!
+  uploadVocabularies(file: Upload!): Boolean
 }
 
 type PageInfo {
@@ -25,6 +26,9 @@ type Query {
   sayHello: String!
   searchVocabularies(after: String, before: String, first: Int, last: Int, search: String): VocabularyConnection!
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type UserCredential {
   accessToken: String!
