@@ -27,6 +27,16 @@ export class VocabularyServiceImpl implements VocabularyService {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
 
+  async findByWords(words: string[]) {
+    return this.vocabularyModel
+      .find({
+        word: {
+          $in: words,
+        },
+      })
+      .lean();
+  }
+
   async search(args: VocabularyArgs) {
     const query = this.vocabularyModel
       .find<VocabularyDocument>(
@@ -64,7 +74,7 @@ export class VocabularyServiceImpl implements VocabularyService {
     } catch (error) {
       this.logger.error(error);
       throw new UnprocessableEntityException(
-        'There are duplicate vocabularies',
+        'There are error while processing bulk insert vocabularies',
       );
     }
   }

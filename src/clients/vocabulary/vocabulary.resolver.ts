@@ -1,4 +1,5 @@
-import { Inject } from '@nestjs/common';
+import { SheetReader } from '@excel/sheet-reader';
+import { Inject, UnprocessableEntityException } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { GraphQLUpload } from 'graphql-upload';
 import { CreateVocabDto } from './dto/create-vocab.dto';
@@ -6,7 +7,6 @@ import { FileUploadDto } from './dto/file-upload.dto';
 import { VocabularyArgs } from './dto/vocabulary.arg';
 import { VocabularyConnection } from './dto/vocabulary.connection';
 import { mapSheetRowsToCreateVocabDtos } from './sheet-to-create-dto.mapper';
-import { CsvParser } from './vocab-excel-proccessor';
 import {
   VocabularyService,
   VocabularyServiceToken,
@@ -16,7 +16,6 @@ export class VocabularyResolver {
   constructor(
     @Inject(VocabularyServiceToken)
     private readonly vocabularyService: VocabularyService,
-    private readonly vocabExcelProcessor: CsvParser,
   ) {}
 
   @Query(() => VocabularyConnection)
@@ -43,11 +42,22 @@ export class VocabularyResolver {
     })
     fileUpload: FileUploadDto,
   ) {
-    const sheetRows = await this.vocabExcelProcessor.process(fileUpload);
+    const sheetReader = new SheetReader(fileUpload);
 
-    await this.vocabularyService.createMany(
-      mapSheetRowsToCreateVocabDtos(sheetRows),
-    );
+    sheetReader.each(async (rows) => {
+      const dtos = mapSheetRowsToCreateVocabDtos(rows);
+      const words = dtos.map((dto) => dto.word);
+      const vocabs = await this.vocabularyService.findByWords(words);
+      if (vocabs.length > 0) {
+        throw new UnprocessableEntityException(
+          'Vocabularies were already existed: ' +
+            vocabs.map((v) => v.word).join(', '),
+        );
+      }
+      await this.vocabularyService.createMany(dtos);
+    });
+
+    await sheetReader.start();
 
     // TODO: Create collection collect words from sheetRows
   }

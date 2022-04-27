@@ -11,4 +11,5 @@ export interface VocabularyService {
   search(
     args: VocabularyArgs,
   ): Promise<GraphqlConnection<LeanDocument<VocabularyDocument>>>;
+  findByWords(words: string[]): Promise<LeanDocument<VocabularyDocument>[]>;
 }
