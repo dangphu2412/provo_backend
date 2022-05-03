@@ -51,6 +51,21 @@
       ],
       "@excel/*": [
         "./src/modules/excel/*"
+      ],
+      "@collection-client/*": [
+        "./src/clients/collection/*"
+      ],
+      "@collection/*": [
+        "./src/modules/collection/*"
+      ],
+      "@search-client/*": [
+        "./src/clients/search/*"
+      ],
+      "@search/*": [
+        "./src/modules/search/*"
+      ],
+      "@mongoose/*": [
+        "./src/modules/mongoose/*"
       ]
     }
   },

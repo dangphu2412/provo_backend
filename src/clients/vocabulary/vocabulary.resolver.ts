@@ -57,7 +57,7 @@ export class VocabularyResolver {
       await this.vocabularyService.createMany(dtos);
     });
 
-    await sheetReader.start();
+    await sheetReader.read();
 
     // TODO: Create collection collect words from sheetRows
   }

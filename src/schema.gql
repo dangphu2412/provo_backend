@@ -22,7 +22,25 @@ type PageInfo {
   startCursor: String
 }
 
+type ProviderCollectionConnection {
+  edges: [ProviderCollectionTypeEdge!]
+  pageInfo: PageInfo
+  totalCount: Float
+}
+
+type ProviderCollectionType {
+  _id: String!
+  fee: Float!
+  vocabularies: [VocabularyType!]!
+}
+
+type ProviderCollectionTypeEdge {
+  cursor: String!
+  node: ProviderCollectionType!
+}
+
 type Query {
+  findPurchaseCollections(after: String, before: String, first: Int, last: Int): ProviderCollectionConnection!
   sayHello: String!
   searchVocabularies(after: String, before: String, first: Int, last: Int, search: String): VocabularyConnection!
 }

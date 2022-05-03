@@ -17,7 +17,7 @@ export class SheetReader {
     this.consumer = action;
   }
 
-  public async start() {
+  public async read() {
     const workBook = await this.workBookReader.read();
 
     for (const sheetName of workBook.sheetNames) {

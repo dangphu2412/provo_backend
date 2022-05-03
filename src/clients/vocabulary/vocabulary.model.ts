@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export interface VocabularyDocument extends Document {
   definition: string;
@@ -9,8 +9,6 @@ export interface VocabularyDocument extends Document {
 
 @Schema()
 export class Vocabulary {
-  _id: Types.ObjectId;
-
   @Prop()
   definition: string;
 

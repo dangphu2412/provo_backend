@@ -8,14 +8,14 @@ import { Model } from 'mongoose';
 @Injectable()
 export class UserServiceImpl implements UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  async createOne(dto: CreateUserDto): Promise<UserDocument> {
+  async createOne(dto: CreateUserDto) {
     return await this.userModel.create(dto);
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string) {
     return await this.userModel.findOne({ email }).lean();
   }
 }

@@ -1,10 +1,12 @@
 import { ExternalModuleRegister } from '@config/external-service-register';
 import { Module } from '@nestjs/common';
-import { UserModule } from './clients/user/user.module';
-import { AuthModule } from './clients/auth/auth.module';
-import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import { PaginationModule } from '@pagination/pagination.module';
+import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
+import { AuthModule } from './clients/auth/auth.module';
+import { CollectionModule } from './clients/collection/collection.module';
 import { ExcelModule } from './clients/excel/excel.module';
+import { UserModule } from './clients/user/user.module';
+import { HealthModule } from './modules/health-check/health.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { ExcelModule } from './clients/excel/excel.module';
     AuthModule,
     VocabularyModule,
     ExcelModule,
+    CollectionModule,
+    HealthModule,
   ],
 })
 export class AppModule {}
