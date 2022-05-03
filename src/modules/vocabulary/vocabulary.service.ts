@@ -1,5 +1,10 @@
 import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import {
+  CursorConnectionExecutor,
+  CursorConnectionExecutorToken,
+} from '@pagination/cursor-connection-excutor';
+import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import { VocabularyArgs } from '@vocabulary-client/dto/vocabulary.arg';
 import {
@@ -8,10 +13,6 @@ import {
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { Model } from 'mongoose';
-import {
-  CursorPaginationBuilderToken,
-  CursorPaginationQueryBuilder,
-} from '../pagination/cursor-pagination.builder';
 
 export class VocabularyServiceImpl implements VocabularyService {
   private static LIMIT_RECORD_PER_INSERT = 100;
@@ -21,8 +22,8 @@ export class VocabularyServiceImpl implements VocabularyService {
   constructor(
     @InjectModel(Vocabulary.name)
     private readonly vocabularyModel: Model<VocabularyDocument>,
-    @Inject(CursorPaginationBuilderToken)
-    private readonly cursorPaginationQueryBuilder: CursorPaginationQueryBuilder,
+    @Inject(CursorConnectionExecutorToken)
+    private readonly cursorConnectionExecutor: CursorConnectionExecutor,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
@@ -50,20 +51,12 @@ export class VocabularyServiceImpl implements VocabularyService {
       )
       .lean();
 
-    const countQuery = query.clone().count();
-
-    const [result, totalCount] = await Promise.all([
-      this.cursorPaginationQueryBuilder.build(query, args),
-      countQuery,
-    ]);
-
-    const edges = this.cursorPaginationQueryBuilder.buildEdges(result);
-
-    return this.cursorPaginationQueryBuilder.buildConnection({
-      edges,
-      paginationArgs: args,
-      totalCount,
+    const request = new CursorConnectionRequestBuilder({
+      query,
+      paginationArguments: args,
     });
+
+    return this.cursorConnectionExecutor.buildConnection(request);
   }
 
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {

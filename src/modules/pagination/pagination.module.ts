@@ -1,11 +1,11 @@
-import { MongoCursorTransformation } from './transformation/mongo-transformation';
 import { DynamicModule, Module } from '@nestjs/common';
 import { ConfigStorage, PaginationConfig } from './config-storage';
-import { CursorTransformationToken } from './transformation/cursor-transformation.strategy';
 import {
-  CursorPaginationQueryBuilderImpl,
-  CursorPaginationBuilderToken,
-} from './cursor-pagination.builder';
+  CursorConnectionExecutorImpl,
+  CursorConnectionExecutorToken,
+} from './cursor-connection-excutor';
+import { CursorTransformationToken } from './transformation/cursor-transformation.strategy';
+import { MongoCursorTransformation } from './transformation/mongo-transformation';
 
 export type PaginationModuleOptions = Partial<PaginationConfig>;
 
@@ -43,11 +43,11 @@ export class PaginationModule {
           useClass: MongoCursorTransformation,
         },
         {
-          provide: CursorPaginationBuilderToken,
-          useClass: CursorPaginationQueryBuilderImpl,
+          provide: CursorConnectionExecutorToken,
+          useClass: CursorConnectionExecutorImpl,
         },
       ],
-      exports: [CursorTransformationToken, CursorPaginationBuilderToken],
+      exports: [CursorTransformationToken, CursorConnectionExecutorToken],
     };
   }
 }

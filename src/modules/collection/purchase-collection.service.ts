@@ -1,17 +1,18 @@
 import {
-  ProviderCollectionDocument,
   ProviderCollection,
+  ProviderCollectionDocument,
 } from '@collection-client/model/provider-collection.model';
 import { ProviderCollectionService } from '@collection-client/service/provider-collection.service';
 import { Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import {
-  CursorPaginationBuilderToken,
-  CursorPaginationQueryBuilder,
-} from '@pagination/cursor-pagination.builder';
+  CursorConnectionExecutor,
+  CursorConnectionExecutorToken,
+} from '@pagination/cursor-connection-excutor';
+import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { Model, LeanDocument } from 'mongoose';
+import { LeanDocument, Model } from 'mongoose';
 
 export class ProviderCollectionServiceImpl
   implements ProviderCollectionService
@@ -19,8 +20,8 @@ export class ProviderCollectionServiceImpl
   constructor(
     @InjectModel(ProviderCollection.name)
     private readonly providerCollectionModel: Model<ProviderCollectionDocument>,
-    @Inject(CursorPaginationBuilderToken)
-    private readonly cursorPaginationQueryBuilder: CursorPaginationQueryBuilder,
+    @Inject(CursorConnectionExecutorToken)
+    private readonly cursorConnectionExecutor: CursorConnectionExecutor,
   ) {}
 
   async findMany(
@@ -30,19 +31,11 @@ export class ProviderCollectionServiceImpl
       .find<ProviderCollection>()
       .lean();
 
-    const countQuery = query.clone().count();
-
-    const [result, totalCount] = await Promise.all([
-      this.cursorPaginationQueryBuilder.build(query, args),
-      countQuery,
-    ]);
-
-    const edges = this.cursorPaginationQueryBuilder.buildEdges(result);
-
-    return this.cursorPaginationQueryBuilder.buildConnection({
-      edges,
-      paginationArgs: args,
-      totalCount,
+    const request = new CursorConnectionRequestBuilder({
+      query,
+      paginationArguments: args,
     });
+
+    return this.cursorConnectionExecutor.buildConnection(request);
   }
 }
