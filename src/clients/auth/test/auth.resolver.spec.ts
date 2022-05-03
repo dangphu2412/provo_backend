@@ -1,10 +1,9 @@
-import { GoogleAuthenticatorImpl } from './../../../modules/auth/google-authenticator';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthResolver } from '../auth.resolver';
 import { AuthServiceImpl } from '../../../modules/auth/auth.service';
-import { GoogleAuthenticatorToken, GoogleUser } from '../google.authenticator';
+import { GoogleAuthenticatorImpl } from '../../../modules/auth/google-authenticator';
+import { AuthResolver } from '../auth.resolver';
 import { AuthServiceToken } from '../auth.service';
-import { ConfigModule } from '@nestjs/config';
+import { GoogleAuthenticatorToken } from '../google.authenticator';
 
 describe('AuthResolver', () => {
   let resolver: AuthResolver;
@@ -22,12 +21,14 @@ describe('AuthResolver', () => {
         {
           provide: AuthServiceToken,
           useValue: {},
-        }
+        },
       ],
     }).compile();
 
     resolver = module.get<AuthResolver>(AuthResolver);
-    googleAuthenticator = module.get<GoogleAuthenticatorImpl>(GoogleAuthenticatorToken);
+    googleAuthenticator = module.get<GoogleAuthenticatorImpl>(
+      GoogleAuthenticatorToken,
+    );
     authService = module.get<AuthServiceImpl>(AuthServiceToken);
   });
 

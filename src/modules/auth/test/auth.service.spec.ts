@@ -2,11 +2,11 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserServiceToken } from '@user-client/user.service';
 import { Types } from 'mongoose';
+import { UserCredential } from '../../../clients/auth/entities/user-credential';
 import { User } from '../../../clients/user/user.model';
+import { ObjectId } from '../../mongoose/type';
+import { UserServiceImpl } from '../../user/user.service';
 import { AuthServiceImpl } from '../auth.service';
-import { UserCredential } from './../../../clients/auth/entities/user-credential';
-import { ObjectId } from './../../mongoose/type';
-import { UserServiceImpl } from './../../user/user.service';
 
 describe('AuthService', () => {
   let service: AuthServiceImpl;
@@ -21,17 +21,16 @@ describe('AuthService', () => {
           provide: UserServiceToken,
           useValue: {
             findByEmail: jest.fn(),
-          }
+          },
         },
         {
           provide: JwtService,
           useValue: {
             sign: jest.fn(),
-          }
-        }
+          },
+        },
       ],
-    })
-    .compile();
+    }).compile();
 
     userService = module.get<UserServiceImpl>(UserServiceToken);
     jwtService = module.get<JwtService>(JwtService);
@@ -53,20 +52,22 @@ describe('AuthService', () => {
       name: '',
       email: '',
       avatarSrc: '',
-      credit: 0
-    }
+      credit: 0,
+    };
 
-    jest.spyOn(userService, 'findByEmail').mockImplementation((_) => {
+    jest.spyOn(userService, 'findByEmail').mockImplementation(() => {
       return Promise.resolve(mockUser);
     });
 
-    jest.spyOn(jwtService, 'sign').mockImplementation((_, __) => '');
+    jest.spyOn(jwtService, 'sign').mockImplementation(() => '');
 
-    expect(await service.loginByGoogleUser({
-      sub: '',
-      fullName: '',
-      email: '',
-      avatar: '',
-    })).toStrictEqual(userCredential);
-  })
+    expect(
+      await service.loginByGoogleUser({
+        sub: '',
+        fullName: '',
+        email: '',
+        avatar: '',
+      }),
+    ).toStrictEqual(userCredential);
+  });
 });

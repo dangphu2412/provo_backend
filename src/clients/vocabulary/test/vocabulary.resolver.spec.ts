@@ -12,7 +12,7 @@ describe('VocabularyResolver', () => {
         {
           provide: VocabularyServiceToken,
           useValue: {},
-        }
+        },
       ],
     }).compile();
 
