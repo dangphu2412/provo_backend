@@ -23,8 +23,10 @@ export interface CursorConnectionRequest<Q, A extends PaginationArgs> {
   limit?: number;
 }
 
-export class CursorConnectionRequestBuilder<Q, A extends PaginationArgs>
-  implements CursorConnectionRequest<Q, A>
+export class CursorConnectionRequestBuilder<
+  Q,
+  A extends PaginationArgs = PaginationArgs,
+> implements CursorConnectionRequest<Q, A>
 {
   public readonly cursorKey: string;
   public rootQuery: Query<Q[], Q>;

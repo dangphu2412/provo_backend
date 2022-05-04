@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 input CreateVocabDto {
-  definition: String!
+  definitions: [String!]!
   examples: [String!]!
   word: String!
 }
@@ -42,7 +42,6 @@ type ProviderCollectionTypeEdge {
 type Query {
   findPurchaseCollections(after: String, before: String, first: Int, last: Int): ProviderCollectionConnection!
   sayHello: String!
-  searchVocabularies(after: String, before: String, first: Int, last: Int, search: String): VocabularyConnection!
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -54,20 +53,9 @@ type UserCredential {
   refreshToken: String!
 }
 
-type VocabularyConnection {
-  edges: [VocabularyTypeEdge!]
-  pageInfo: PageInfo
-  totalCount: Float
-}
-
 type VocabularyType {
   _id: String!
   definition: String!
   examples: [String!]!
   word: String!
-}
-
-type VocabularyTypeEdge {
-  cursor: String!
-  node: VocabularyType!
 }

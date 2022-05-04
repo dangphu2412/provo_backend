@@ -1,17 +1,12 @@
-import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {
-  CursorConnectionExecutor,
-  CursorConnectionExecutorToken,
-} from '@pagination/cursor-connection-excutor';
-import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
-import { VocabularyArgs } from '@vocabulary-client/dto/vocabulary.arg';
 import {
   Vocabulary,
   VocabularyDocument,
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
+import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
 
 export class VocabularyServiceImpl implements VocabularyService {
@@ -22,41 +17,16 @@ export class VocabularyServiceImpl implements VocabularyService {
   constructor(
     @InjectModel(Vocabulary.name)
     private readonly vocabularyModel: Model<VocabularyDocument>,
-    @Inject(CursorConnectionExecutorToken)
-    private readonly cursorConnectionExecutor: CursorConnectionExecutor,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
 
   async findByWords(words: string[]) {
-    return this.vocabularyModel
-      .find({
-        word: {
-          $in: words,
-        },
-      })
-      .lean();
-  }
-
-  async search(args: VocabularyArgs) {
-    const query = this.vocabularyModel
-      .find<VocabularyDocument>(
-        args.search
-          ? {
-              $text: {
-                $search: args.search,
-              },
-            }
-          : {},
-      )
-      .lean();
-
-    const request = new CursorConnectionRequestBuilder({
-      query,
-      paginationArguments: args,
+    return this.vocabularyModel.find({
+      word: {
+        $in: words,
+      },
     });
-
-    return this.cursorConnectionExecutor.buildConnection(request);
   }
 
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {
@@ -70,5 +40,39 @@ export class VocabularyServiceImpl implements VocabularyService {
         'There are error while processing bulk insert vocabularies',
       );
     }
+  }
+
+  async upsertMany(createDtos: CreateVocabDto[]): Promise<void> {
+    const words = createDtos.map((dto) => dto.word);
+    const existedVocabularies = await this.findByWords(words);
+    let newDtos = createDtos;
+
+    if (!isEmpty(existedVocabularies)) {
+      newDtos = createDtos.filter(
+        (dto) =>
+          !existedVocabularies.some(
+            (vocabulary) => vocabulary.word === dto.word,
+          ),
+      );
+
+      existedVocabularies.forEach((vocabulary) => {
+        const matchedDto = createDtos.find(
+          (dto) => dto.word === vocabulary.word,
+        );
+        if (
+          matchedDto &&
+          !isEmpty(matchedDto.definitions) &&
+          matchedDto.definitions[0]
+        ) {
+          vocabulary.definitions.push(matchedDto.definitions[0]);
+          vocabulary.definitions = [...new Set(vocabulary.definitions)];
+        }
+      });
+    }
+
+    await Promise.all([
+      this.vocabularyModel.bulkSave(existedVocabularies),
+      this.createMany(newDtos),
+    ]);
   }
 }

@@ -10,27 +10,22 @@ export function extractOrigins(rawConfigString: string | undefined) {
   return EnvLoaderUtils.loadMany(rawConfigString);
 }
 
-export function logScaffoldApp(app: INestApplication) {
+export function logApplicationInformation(app: INestApplication) {
   const logger: Logger = new Logger('AppBootstrap');
   const configService: ConfigService = app.get(ConfigService);
+  const port = configService.get('PORT') ?? 3000;
+  const origins = extractOrigins(configService.get('CORS_ORIGINS'));
+  const env = configService.get('NODE_ENV');
+  const graphRoute = configService.get('GRAPHQL_ROUTE') || '/graphql';
+  const memUsage = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024);
 
+  logger.log(`Application is allowing origins: ${origins}`);
+  logger.log(`Application is running on port ${port}`);
+  logger.log(`Application is running in ${env} mode`);
+  logger.log(`Graphql is running on route ${graphRoute}`);
   logger.log(
-    `Application is allowing origins: ${extractOrigins(
-      configService.get('CORS_ORIGINS'),
-    ).toString()}`,
-  );
-  logger.log(`Application is running on port ${configService.get('PORT')}`);
-  logger.log(`Application is running in ${configService.get('NODE_ENV')} mode`);
-  logger.log(
-    `Graphql is running on route ${
-      configService.get('GRAPHQL_ROUTE') || '/graphql'
-    }`,
-  );
-  logger.log(
-    'Memory usage: ' +
-      Math.floor(process.memoryUsage().heapUsed / 1024 / 1024) +
-      'MB' +
-      ' CPU usage: ' +
+    `Memory usage: ${memUsage} MB -` +
+      'CPU usage: ' +
       process.cpuUsage().user / 1000 +
       '%',
   );

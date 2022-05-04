@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { VocabularySearchServiceToken } from '@search-client/vocabulary-search.service';
-import { ElasticHealthIndicator } from './search-health-indicator';
-import { VocabularySearchServiceImpl } from './vocabulary-search.service';
+import { ElasticHealthIndicator } from '@search/search-health-indicator';
+import { VocabularySearchServiceImpl } from '@search/vocabulary-search.service';
 
+/**
+ * @deprecated Currently not used.
+ */
 @Module({
   imports: [
     ElasticsearchModule.registerAsync({

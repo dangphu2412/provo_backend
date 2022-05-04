@@ -7,9 +7,11 @@ export class CreateVocabDto {
   @IsString()
   readonly word: string;
 
-  @Field()
-  @IsString()
-  readonly definition: string;
+  @Field(() => [String])
+  @IsString({
+    each: true,
+  })
+  readonly definitions: string[];
 
   @Field(() => [String])
   readonly examples: string[];

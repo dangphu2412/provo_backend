@@ -16,8 +16,8 @@ export function mapSheetRowsToCreateVocabDtos(
   return sheetRows
     .map((sheetRow) => ({
       word: sheetRow.word ?? '',
-      definition: sheetRow.meaning ?? '',
+      definitions: sheetRow.meaning ? [sheetRow.meaning] : [],
       examples: isString(sheetRow.example) ? [sheetRow.example] : [],
     }))
-    .filter(({ word, definition }) => !!word && !!definition);
+    .filter(({ word }) => !!word);
 }
