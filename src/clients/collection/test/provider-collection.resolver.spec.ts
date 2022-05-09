@@ -1,14 +1,14 @@
-import { PurchaseCollectionResolver } from '@collection-client/provider-collection.resolver';
+import { ProviderCollectionResolver } from '@collection-client/provider-collection.resolver';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProviderCollectionServiceToken } from '../service/provider-collection.service';
 
-describe('PurchaseCollectionResolver', () => {
-  let resolver: PurchaseCollectionResolver;
+describe('ProviderCollectionResolver', () => {
+  let resolver: ProviderCollectionResolver;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PurchaseCollectionResolver,
+        ProviderCollectionResolver,
         {
           provide: ProviderCollectionServiceToken,
           useValue: {},
@@ -16,8 +16,8 @@ describe('PurchaseCollectionResolver', () => {
       ],
     }).compile();
 
-    resolver = module.get<PurchaseCollectionResolver>(
-      PurchaseCollectionResolver,
+    resolver = module.get<ProviderCollectionResolver>(
+      ProviderCollectionResolver,
     );
   });
 

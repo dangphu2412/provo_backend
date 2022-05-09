@@ -6,6 +6,9 @@ export type UserCollectionDocument = UserCollection & Document;
 
 @Schema()
 export class UserCollection {
+  @Prop()
+  name: string;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: Vocabulary.name }] })
   vocabularies: Vocabulary[];
 }

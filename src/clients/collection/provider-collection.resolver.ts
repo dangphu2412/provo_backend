@@ -8,7 +8,7 @@ import {
 } from './service/provider-collection.service';
 
 @Resolver()
-export class PurchaseCollectionResolver {
+export class ProviderCollectionResolver {
   constructor(
     @Inject(ProviderCollectionServiceToken)
     private readonly providerCollectionService: ProviderCollectionService,

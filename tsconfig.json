@@ -46,9 +46,6 @@
       "@pagination/*": [
         "./src/modules/pagination/*"
       ],
-      "@excel-client/*": [
-        "./src/clients/excel/*"
-      ],
       "@excel/*": [
         "./src/modules/excel/*"
       ],

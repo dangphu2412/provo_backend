@@ -40,12 +40,28 @@ type ProviderCollectionTypeEdge {
 }
 
 type Query {
-  findPurchaseCollections(after: String, before: String, first: Int, last: Int): ProviderCollectionConnection!
+  findPurchaseCollections(after: String, before: String, first: Int, last: Int): UserCollectionConnection!
   sayHello: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+type UserCollectionConnection {
+  edges: [UserCollectionTypeEdge!]
+  pageInfo: PageInfo
+  totalCount: Float
+}
+
+type UserCollectionType {
+  _id: String!
+  vocabularies: [VocabularyType!]!
+}
+
+type UserCollectionTypeEdge {
+  cursor: String!
+  node: UserCollectionType!
+}
 
 type UserCredential {
   accessToken: String!

@@ -19,7 +19,9 @@ export function logApplicationInformation(app: INestApplication) {
   const graphRoute = configService.get('GRAPHQL_ROUTE') || '/graphql';
   const memUsage = Math.floor(process.memoryUsage().heapUsed / 1024 / 1024);
 
-  logger.log(`Application is allowing origins: ${origins}`);
+  logger.log(
+    `Application is allowing origins: ${origins === '*' ? 'ALL' : origins}`,
+  );
   logger.log(`Application is running on port ${port}`);
   logger.log(`Application is running in ${env} mode`);
   logger.log(`Graphql is running on route ${graphRoute}`);
