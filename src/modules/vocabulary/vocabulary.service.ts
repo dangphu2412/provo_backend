@@ -48,21 +48,17 @@ export class VocabularyServiceImpl implements VocabularyService {
     let newDtos = createDtos;
 
     if (!isEmpty(existedVocabularies)) {
-      newDtos = createDtos.filter(
-        (dto) =>
-          !existedVocabularies.some(
-            (vocabulary) => vocabulary.word === dto.word,
-          ),
-      );
+      newDtos = createDtos.filter(this.isDtoNotExistIn(existedVocabularies));
 
       existedVocabularies.forEach((vocabulary) => {
         const matchedDto = createDtos.find(
           (dto) => dto.word === vocabulary.word,
         );
+
         if (
-          matchedDto &&
+          !!matchedDto &&
           !isEmpty(matchedDto.definitions) &&
-          matchedDto.definitions[0]
+          !!matchedDto.definitions[0]
         ) {
           vocabulary.definitions.push(matchedDto.definitions[0]);
           vocabulary.definitions = [...new Set(vocabulary.definitions)];
@@ -74,5 +70,14 @@ export class VocabularyServiceImpl implements VocabularyService {
       this.vocabularyModel.bulkSave(existedVocabularies),
       this.createMany(newDtos),
     ]);
+  }
+
+  private isDtoNotExistIn(
+    existedVocabularies: (VocabularyDocument & {
+      _id: any;
+    })[],
+  ) {
+    return (dto: CreateVocabDto) =>
+      !existedVocabularies.some((vocabulary) => vocabulary.word === dto.word);
   }
 }

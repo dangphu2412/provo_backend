@@ -8,9 +8,6 @@ export type UserCollectionDocument = UserCollection & Document;
 export class UserCollection {
   @Prop({ type: [{ type: Types.ObjectId, ref: Vocabulary.name }] })
   vocabularies: Vocabulary[];
-
-  @Prop()
-  fee: number;
 }
 
 export const UserCollectionSchema =
