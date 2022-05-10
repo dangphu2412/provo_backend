@@ -16,7 +16,7 @@ module.exports.DataSyncExecutor = class DataSyncExecutor {
   async execute(databaseHost) {
     const collections = await databaseHost.listCollections();
 
-    const loadAll = Promise.all(
+    await Promise.all(
       collections.map((collection) => {
         const schemaMapper = this.#registry.getSchema(collection.id);
 
@@ -24,7 +24,5 @@ module.exports.DataSyncExecutor = class DataSyncExecutor {
         return dataLoader.load(databaseHost);
       }),
     );
-
-    await loadAll;
   }
 };
