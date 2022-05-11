@@ -6,6 +6,9 @@ export class UserCollectionType {
   @Field()
   _id: string;
 
+  @Field()
+  name: string;
+
   @Field(() => [VocabularyType])
   vocabularies: VocabularyType[];
 }

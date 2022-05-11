@@ -14,8 +14,10 @@ export class ProviderCollectionResolver {
     private readonly providerCollectionService: ProviderCollectionService,
   ) {}
 
-  @Query(() => ProviderCollectionConnection)
-  findPurchaseCollections(@Args() args: PaginationArgs) {
+  @Query(() => ProviderCollectionConnection, {
+    name: 'providerCollections',
+  })
+  getProviderCollections(@Args() args: PaginationArgs) {
     return this.providerCollectionService.findMany(args);
   }
 }

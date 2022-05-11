@@ -1,3 +1,4 @@
+import { CreateCollectionDto } from '@collection-client/dto/create-collection.dto';
 import { UserCollectionService } from '@collection-client/service/user-collection.service';
 import { Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -21,6 +22,10 @@ export class UserCollectionServiceImpl implements UserCollectionService {
     @Inject(CursorConnectionExecutorToken)
     private readonly cursorConnectionExecutor: CursorConnectionExecutor,
   ) {}
+
+  async createOne(dto: CreateCollectionDto): Promise<void> {
+    (await this.userCollectionModel.create(dto)).save();
+  }
 
   public async findMany(
     args: PaginationArgs,

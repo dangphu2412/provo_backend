@@ -11,4 +11,7 @@ export class ProviderCollectionType {
 
   @Field()
   fee: number;
+
+  @Field()
+  name: string;
 }
