@@ -1,10 +1,10 @@
-import { JwtPayload } from './../../clients/auth/entities/jwt-payload';
 import { AuthService } from '@auth-client/auth.service';
 import { UserCredential } from '@auth-client/entities/user-credential';
 import { GoogleUser } from '@auth-client/google.authenticator';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService, UserServiceToken } from '@user-client/user.service';
+import { JwtPayload } from './../../clients/auth/entities/jwt-payload';
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {

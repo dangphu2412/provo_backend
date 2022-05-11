@@ -16,7 +16,7 @@ module.exports = {
   async testConnection() {
     try {
       await databaseHost.listCollections();
-      console.log('Connection successful!');
+      console.log('Database connection successful!');
     } catch (error) {
       console.log(error);
       process.exit();
@@ -25,6 +25,7 @@ module.exports = {
   async closeConnection() {
     try {
       await databaseHost.terminate();
+      console.log('Database connection closed!');
     } catch (error) {
       console.log(error);
     }

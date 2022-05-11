@@ -18,7 +18,9 @@ module.exports.DataSyncExecutor = class DataSyncExecutor {
 
     await Promise.all(
       collections.map((collection) => {
+        console.log(`Fetching collection ${collection.id}`);
         const schemaMapper = this.#registry.getSchema(collection.id);
+        console.log(`Get schema mapper of collection ${collection.id}`);
 
         const dataLoader = new DataLoader(collection.id, schemaMapper);
         return dataLoader.load(databaseHost);

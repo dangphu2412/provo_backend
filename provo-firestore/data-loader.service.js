@@ -24,6 +24,9 @@ module.exports.DataLoader = class DataLoader {
     const collection = databaseHost.collection(this.#name);
 
     const snapshot = await collection.get();
+    console.log(
+      `Fetching ${snapshot.size} documents from collection ${this.#name}`,
+    );
 
     const pathToSave = `./${DataLoader.FOLDER_NAME}/${this.#name}${
       DataLoader.FILE_EXTENSION
@@ -53,11 +56,13 @@ module.exports.DataLoader = class DataLoader {
     let fileHandle;
     try {
       fileHandle = await open(pathToSave, 'w');
+      console.log(`Saving data to ${pathToSave}`);
       fileHandle.writeFile(JSON.stringify(dataToWrite, null, 2));
     } catch (error) {
       console.log(error);
     } finally {
       fileHandle.close();
+      console.log(`Finish saving to ${pathToSave}`);
     }
   }
 
