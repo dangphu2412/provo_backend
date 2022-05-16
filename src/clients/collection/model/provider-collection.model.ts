@@ -9,6 +9,11 @@ export class ProviderCollection {
   @Prop({ type: [{ type: Types.ObjectId, ref: Vocabulary.name }] })
   vocabularies: Vocabulary[];
 
+  @Prop({
+    unique: true,
+  })
+  name: string;
+
   @Prop()
   fee: number;
 }

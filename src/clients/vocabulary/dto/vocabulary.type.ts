@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { DefinitionType } from './definition.type';
 
 @ObjectType()
 export class VocabularyType {
@@ -6,11 +7,8 @@ export class VocabularyType {
   _id: string;
 
   @Field()
-  definition: string;
-
-  @Field()
   word: string;
 
-  @Field(() => [String])
-  examples: string[];
+  @Field(() => [DefinitionType])
+  definitions: DefinitionType[];
 }

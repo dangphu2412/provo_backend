@@ -5,7 +5,7 @@ import { SheetRows } from './sheet-rows';
 
 export type SheetConsumer = (sheetRows: SheetRows) => Promise<void>;
 
-export class SheetReader {
+export class SheetProcessor {
   private workBookReader: WorkBookReader;
   private consumer: SheetConsumer;
 
@@ -13,11 +13,11 @@ export class SheetReader {
     this.workBookReader = new WorkBookReader(fileUpload);
   }
 
-  public each(action: SheetConsumer) {
+  public define(action: SheetConsumer) {
     this.consumer = action;
   }
 
-  public async read() {
+  public async process() {
     const workBook = await this.workBookReader.read();
 
     for (const sheetName of workBook.sheetNames) {

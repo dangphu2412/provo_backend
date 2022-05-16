@@ -7,13 +7,24 @@ input CreateCollectionDto {
 }
 
 input CreateVocabDto {
-  definitions: [String!]!
-  examples: [String!]!
+  definitions: [DefinitionDto!]!
   word: String!
 }
 
+input DefinitionDto {
+  examples: [String!]!
+  meaning: String!
+  type: String!
+}
+
+type DefinitionType {
+  examples: [String!]!
+  meaning: String
+  type: String
+}
+
 type Mutation {
-  createSelfCollection(createCollectionDto: CreateCollectionDto!): Boolean
+  createSelfCollection(createCollectionDto: CreateCollectionDto!): Boolean!
   createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
   getTestCredential: UserCredential!
   loginByGoogleAccessToken(idToken: String!): UserCredential!
@@ -79,7 +90,6 @@ type UserCredential {
 
 type VocabularyType {
   _id: String!
-  definition: String!
-  examples: [String!]!
+  definitions: [DefinitionType!]!
   word: String!
 }

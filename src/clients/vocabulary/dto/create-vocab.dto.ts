@@ -1,18 +1,17 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsString } from 'class-validator';
+import { Definition } from '@vocabulary-client/vocabulary.model';
+import { Type } from 'class-transformer';
+import { IsString, ValidateNested } from 'class-validator';
+import { DefinitionDto } from './definition.dto';
 
 @InputType()
 export class CreateVocabDto {
   @Field()
   @IsString()
-  readonly word: string;
+  public word: string;
 
-  @Field(() => [String])
-  @IsString({
-    each: true,
-  })
-  readonly definitions: string[];
-
-  @Field(() => [String])
-  readonly examples: string[];
+  @Field(() => [DefinitionDto])
+  @ValidateNested({ each: true })
+  @Type(() => DefinitionDto)
+  public definitions: Definition[];
 }

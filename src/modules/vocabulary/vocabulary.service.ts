@@ -1,3 +1,4 @@
+import { BulkWriteOperation } from '@mongoose/operation.type';
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
@@ -6,12 +7,11 @@ import {
   VocabularyDocument,
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
-import { isEmpty } from 'lodash';
+import { keyBy, uniqBy } from 'lodash';
 import { Model } from 'mongoose';
+import { LIMIT_PER_BULK_WRITE } from './../mongoose/constant';
 
 export class VocabularyServiceImpl implements VocabularyService {
-  private static LIMIT_RECORD_PER_INSERT = 100;
-
   private readonly logger: Logger;
 
   constructor(
@@ -32,7 +32,7 @@ export class VocabularyServiceImpl implements VocabularyService {
   async createMany(vocabularies: CreateVocabDto[]): Promise<void> {
     try {
       await this.vocabularyModel.insertMany(vocabularies, {
-        limit: VocabularyServiceImpl.LIMIT_RECORD_PER_INSERT,
+        limit: LIMIT_PER_BULK_WRITE,
       });
     } catch (error) {
       this.logger.error(error);
@@ -45,39 +45,45 @@ export class VocabularyServiceImpl implements VocabularyService {
   async upsertMany(createDtos: CreateVocabDto[]): Promise<void> {
     const words = createDtos.map((dto) => dto.word);
     const existedVocabularies = await this.findByWords(words);
-    let newDtos = createDtos;
 
-    if (!isEmpty(existedVocabularies)) {
-      newDtos = createDtos.filter(this.isDtoNotExistIn(existedVocabularies));
+    const vocabularyKeyByWord = keyBy(existedVocabularies, 'word');
 
-      existedVocabularies.forEach((vocabulary) => {
-        const matchedDto = createDtos.find(
-          (dto) => dto.word === vocabulary.word,
+    const preparedData = createDtos.map((dto) => {
+      const existedVocabulary = vocabularyKeyByWord[dto.word];
+
+      if (!!existedVocabulary) {
+        existedVocabulary.definitions.push(...dto.definitions);
+        existedVocabulary.definitions = uniqBy(
+          existedVocabulary.definitions,
+          'meaning',
         );
 
-        if (
-          !!matchedDto &&
-          !isEmpty(matchedDto.definitions) &&
-          !!matchedDto.definitions[0]
-        ) {
-          vocabulary.definitions.push(matchedDto.definitions[0]);
-          vocabulary.definitions = [...new Set(vocabulary.definitions)];
-        }
-      });
-    }
+        return existedVocabulary;
+      }
+      return dto;
+    });
 
-    await Promise.all([
-      this.vocabularyModel.bulkSave(existedVocabularies),
-      this.createMany(newDtos),
-    ]);
+    await this.vocabularyModel.bulkWrite(
+      this.toBulkWriteOperation(preparedData),
+    );
   }
 
-  private isDtoNotExistIn(
-    existedVocabularies: (VocabularyDocument & {
-      _id: any;
-    })[],
-  ) {
-    return (dto: CreateVocabDto) =>
-      !existedVocabularies.some((vocabulary) => vocabulary.word === dto.word);
+  // TODO: Separate this operation into mongoose module
+  private toBulkWriteOperation(data: CreateVocabDto[]): BulkWriteOperation[] {
+    return data.map((item) => {
+      return {
+        updateOne: {
+          filter: {
+            word: item.word,
+          },
+          update: {
+            $set: {
+              definitions: item.definitions,
+            },
+          },
+          upsert: true,
+        },
+      };
+    });
   }
 }
