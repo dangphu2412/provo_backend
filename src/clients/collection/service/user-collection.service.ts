@@ -1,3 +1,4 @@
+import { AddVocabularyToCollectionInput } from '@collection-client/dto/add-vocabulary-to-collection.input';
 import { CreateCollectionDto } from '@collection-client/dto/create-collection.dto';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
@@ -12,4 +13,7 @@ export interface UserCollectionService {
   ): Promise<GraphqlConnection<LeanDocument<UserCollection>>>;
 
   createOne(dto: CreateCollectionDto): Promise<void>;
+  addVocabularyToCollection(
+    input: AddVocabularyToCollectionInput,
+  ): Promise<void>;
 }

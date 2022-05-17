@@ -2,11 +2,9 @@ import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
 import { BulkWriteOperation } from '@mongoose/operation.type';
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Definition } from '@vocabulary-client/definition.model';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
-import {
-  VocabularyDocument,
-  Vocabulary,
-} from '@vocabulary-client/vocabulary.model';
+import { Vocabulary } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { keyBy, uniqBy } from 'lodash';
 import { Model, Types } from 'mongoose';
@@ -16,7 +14,7 @@ export class VocabularyServiceImpl implements VocabularyService {
 
   constructor(
     @InjectModel(Vocabulary.name)
-    private readonly vocabularyModel: Model<VocabularyDocument>,
+    private readonly vocabularyModel: Model<Vocabulary>,
   ) {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
@@ -61,7 +59,9 @@ export class VocabularyServiceImpl implements VocabularyService {
       const existedVocabulary = vocabularyKeyByWord[dto.word];
 
       if (!!existedVocabulary) {
-        existedVocabulary.definitions.push(...dto.definitions);
+        existedVocabulary.definitions.push(
+          ...(dto.definitions as Definition[]),
+        );
         existedVocabulary.definitions = uniqBy(
           existedVocabulary.definitions,
           'meaning',

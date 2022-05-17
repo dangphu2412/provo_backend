@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddVocabularyToCollectionInput {
+  createVocabDto: CreateVocabDto!
+  id: String!
+}
+
 input CreateCollectionDto {
   name: String!
 }
@@ -12,9 +17,9 @@ input CreateVocabDto {
 }
 
 input DefinitionDto {
-  examples: [String!]!
+  examples: [String!]
   meaning: String!
-  type: String!
+  type: String
 }
 
 type DefinitionType {
@@ -24,6 +29,7 @@ type DefinitionType {
 }
 
 type Mutation {
+  addVocabularyToCollection(addVocabularyToCollectionInput: AddVocabularyToCollectionInput!): Boolean!
   createSelfCollection(createCollectionDto: CreateCollectionDto!): Boolean!
   createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
   getTestCredential: UserCredential!

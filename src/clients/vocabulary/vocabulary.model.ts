@@ -1,19 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-
-export interface VocabularyDocument extends Document {
-  word: string;
-  definitions: Definition[];
-}
-
-export interface Definition {
-  meaning: string;
-  type: string;
-  examples: string[];
-}
+import { Definition, DefinitionSchema } from './definition.model';
 
 @Schema()
-export class Vocabulary {
+export class Vocabulary extends Document {
   @Prop({
     type: String,
     unique: true,
@@ -21,13 +11,7 @@ export class Vocabulary {
   word: string;
 
   @Prop({
-    type: [
-      {
-        meaning: { type: String },
-        type: { type: String },
-        examples: { type: [String] },
-      },
-    ],
+    type: [DefinitionSchema],
   })
   definitions: Definition[];
 }
