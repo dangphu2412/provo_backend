@@ -1,5 +1,6 @@
+import { LeanDocument, Types } from 'mongoose';
 import { CreateVocabDto } from './dto/create-vocab.dto';
-import { VocabularyDocument } from './vocabulary.model';
+import { Vocabulary, VocabularyDocument } from './vocabulary.model';
 
 export const VocabularyServiceToken = 'VocabularyService';
 
@@ -10,5 +11,6 @@ export interface VocabularyService {
       _id: any;
     })[]
   >;
+  findByIds(ids: Types.ObjectId[]): Promise<LeanDocument<Vocabulary>[]>;
   upsertMany(vocabularies: CreateVocabDto[]): Promise<void>;
 }

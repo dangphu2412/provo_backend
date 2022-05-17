@@ -4,7 +4,7 @@ export interface BulkWriteOperation {
       [key: string]: any;
     };
     update: {
-      [key: string]: any;
+      $set: Record<any, any>;
     };
     upsert: boolean;
   };

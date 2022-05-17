@@ -2,11 +2,10 @@ import { SheetProcessor } from '@excel/sheet-reader';
 import { Inject } from '@nestjs/common';
 import {
   Args,
-  Info,
   Mutation,
   Parent,
   Query,
-  ResolveField,
+  ResolveProperty,
   Resolver,
 } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
@@ -20,12 +19,13 @@ import {
 } from '@vocabulary-client/vocabulary.service';
 import { GraphQLUpload } from 'graphql-upload';
 import { ProviderCollectionConnection } from './dto/provider-collection.connection';
+import { ProviderCollectionType } from './dto/provider-collection.type';
 import {
   ProviderCollectionService,
   ProviderCollectionServiceToken,
 } from './service/provider-collection.service';
 
-@Resolver(() => ProviderCollectionConnection)
+@Resolver(() => ProviderCollectionType)
 export class ProviderCollectionResolver {
   constructor(
     @Inject(ProviderCollectionServiceToken)
@@ -39,6 +39,13 @@ export class ProviderCollectionResolver {
   })
   getProviderCollections(@Args() args: PaginationArgs) {
     return this.providerCollectionService.findMany(args);
+  }
+
+  @ResolveProperty('vocabularies', () => [VocabularyType])
+  async getVocabularies(@Parent() providerCollection: ProviderCollectionType) {
+    console.log('Querying for collection');
+
+    return this.vocabularyService.findByIds(providerCollection.vocabularies);
   }
 
   @Mutation(() => Boolean, { nullable: true })

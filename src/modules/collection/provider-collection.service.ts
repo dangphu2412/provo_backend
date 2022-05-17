@@ -151,7 +151,6 @@ export class ProviderCollectionServiceImpl
   ): Promise<GraphqlConnection<LeanDocument<ProviderCollection>>> {
     const query = this.providerCollectionModel
       .find<ProviderCollection>()
-      .populate('vocabularies')
       .lean();
 
     const request = new CursorConnectionRequestBuilder({

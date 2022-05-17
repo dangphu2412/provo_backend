@@ -1,17 +1,16 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { VocabularyType } from '@vocabulary-client/dto/vocabulary.type';
+import { Types } from 'mongoose';
 
 @ObjectType()
 export class ProviderCollectionType {
   @Field()
   _id: string;
 
-  @Field(() => [VocabularyType])
-  vocabularies: VocabularyType[];
-
   @Field()
   fee: number;
 
   @Field()
   name: string;
+
+  vocabularies: Types.ObjectId[];
 }

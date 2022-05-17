@@ -8,8 +8,8 @@ import {
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { keyBy, uniqBy } from 'lodash';
-import { Model } from 'mongoose';
-import { LIMIT_PER_BULK_WRITE } from './../mongoose/constant';
+import { Model, LeanDocument, Types } from 'mongoose';
+import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
 
 export class VocabularyServiceImpl implements VocabularyService {
   private readonly logger: Logger;
@@ -21,7 +21,7 @@ export class VocabularyServiceImpl implements VocabularyService {
     this.logger = new Logger(VocabularyServiceImpl.name);
   }
 
-  async findByWords(words: string[]) {
+  public async findByWords(words: string[]) {
     return this.vocabularyModel.find({
       word: {
         $in: words,
@@ -29,7 +29,16 @@ export class VocabularyServiceImpl implements VocabularyService {
     });
   }
 
-  async createMany(vocabularies: CreateVocabDto[]): Promise<void> {
+  public findByIds(ids: Types.ObjectId[]): Promise<LeanDocument<Vocabulary>[]> {
+    return this.vocabularyModel
+      .find({
+        _id: ids,
+      })
+      .lean()
+      .exec();
+  }
+
+  public async createMany(vocabularies: CreateVocabDto[]): Promise<void> {
     try {
       await this.vocabularyModel.insertMany(vocabularies, {
         limit: LIMIT_PER_BULK_WRITE,
@@ -42,7 +51,7 @@ export class VocabularyServiceImpl implements VocabularyService {
     }
   }
 
-  async upsertMany(createDtos: CreateVocabDto[]): Promise<void> {
+  public async upsertMany(createDtos: CreateVocabDto[]): Promise<void> {
     const words = createDtos.map((dto) => dto.word);
     const existedVocabularies = await this.findByWords(words);
 
