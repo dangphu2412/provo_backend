@@ -1,8 +1,8 @@
-import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import { ProviderCollectionServiceImpl } from '@collection/provider-collection.service';
 import { UserCollectionServiceImpl } from '@collection/user-collection.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import {
   ProviderCollection,
   ProviderCollectionSchema,

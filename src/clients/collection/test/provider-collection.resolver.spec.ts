@@ -1,5 +1,6 @@
 import { ProviderCollectionResolver } from '@collection-client/provider-collection.resolver';
 import { Test, TestingModule } from '@nestjs/testing';
+import { VocabularyLoader } from '@vocabulary-client/vocabulary-loader';
 import { VocabularyServiceToken } from '@vocabulary-client/vocabulary.service';
 import { ProviderCollectionServiceToken } from '../service/provider-collection.service';
 
@@ -16,6 +17,10 @@ describe('ProviderCollectionResolver', () => {
         },
         {
           provide: VocabularyServiceToken,
+          useValue: {},
+        },
+        {
+          provide: VocabularyLoader,
           useValue: {},
         },
       ],

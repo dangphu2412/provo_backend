@@ -1,15 +1,15 @@
+import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
 import { BulkWriteOperation } from '@mongoose/operation.type';
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import {
-  Vocabulary,
   VocabularyDocument,
+  Vocabulary,
 } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { keyBy, uniqBy } from 'lodash';
-import { Model, LeanDocument, Types } from 'mongoose';
-import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
+import { Model, Types } from 'mongoose';
 
 export class VocabularyServiceImpl implements VocabularyService {
   private readonly logger: Logger;
@@ -29,7 +29,7 @@ export class VocabularyServiceImpl implements VocabularyService {
     });
   }
 
-  public findByIds(ids: Types.ObjectId[]): Promise<LeanDocument<Vocabulary>[]> {
+  public findByIds(ids: Types.ObjectId[]) {
     return this.vocabularyModel
       .find({
         _id: ids,

@@ -5,7 +5,7 @@ import {
   Mutation,
   Parent,
   Query,
-  ResolveProperty,
+  ResolveField,
   Resolver,
 } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
@@ -13,6 +13,7 @@ import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import { FileUploadDto } from '@vocabulary-client/dto/file-upload.dto';
 import { VocabularyType } from '@vocabulary-client/dto/vocabulary.type';
 import { mapSheetRowsToCreateVocabDtos } from '@vocabulary-client/sheet-to-create-dto.mapper';
+import { VocabularyLoader } from '@vocabulary-client/vocabulary-loader';
 import {
   VocabularyService,
   VocabularyServiceToken,
@@ -32,6 +33,7 @@ export class ProviderCollectionResolver {
     private readonly providerCollectionService: ProviderCollectionService,
     @Inject(VocabularyServiceToken)
     private readonly vocabularyService: VocabularyService,
+    private readonly vocabularyLoader: VocabularyLoader,
   ) {}
 
   @Query(() => ProviderCollectionConnection, {
@@ -41,11 +43,9 @@ export class ProviderCollectionResolver {
     return this.providerCollectionService.findMany(args);
   }
 
-  @ResolveProperty('vocabularies', () => [VocabularyType])
+  @ResolveField('vocabularies', () => [VocabularyType])
   async getVocabularies(@Parent() providerCollection: ProviderCollectionType) {
-    console.log('Querying for collection');
-
-    return this.vocabularyService.findByIds(providerCollection.vocabularies);
+    return this.vocabularyLoader.loadMany(providerCollection.vocabularies);
   }
 
   @Mutation(() => Boolean, { nullable: true })
