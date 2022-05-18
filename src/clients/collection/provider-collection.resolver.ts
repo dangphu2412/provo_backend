@@ -1,5 +1,6 @@
+import { JwtAuthGuard } from '@auth/jwt.guard';
 import { SheetProcessor } from '@excel/sheet-reader';
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -39,6 +40,7 @@ export class ProviderCollectionResolver {
   @Query(() => ProviderCollectionConnection, {
     name: 'providerCollections',
   })
+  @UseGuards(JwtAuthGuard)
   getProviderCollections(@Args() args: PaginationArgs) {
     return this.providerCollectionService.findMany(args);
   }
@@ -49,6 +51,7 @@ export class ProviderCollectionResolver {
   }
 
   @Mutation(() => Boolean, { nullable: true })
+  @UseGuards(JwtAuthGuard)
   async uploadVocabularies(
     @Args({
       name: 'file',

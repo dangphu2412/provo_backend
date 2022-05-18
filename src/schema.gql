@@ -7,7 +7,8 @@ input AddVocabularyToCollectionInput {
   id: String!
 }
 
-input CreateCollectionDto {
+input CreateCollectionInput {
+  asd: String!
   name: String!
 }
 
@@ -30,7 +31,7 @@ type DefinitionType {
 
 type Mutation {
   addVocabularyToCollection(addVocabularyToCollectionInput: AddVocabularyToCollectionInput!): Boolean!
-  createSelfCollection(createCollectionDto: CreateCollectionDto!): Boolean!
+  createSelfCollection(createCollectionInput: CreateCollectionInput!): Boolean!
   createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
   getTestCredential: UserCredential!
   loginByGoogleAccessToken(idToken: String!): UserCredential!

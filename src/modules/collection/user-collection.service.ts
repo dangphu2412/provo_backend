@@ -1,5 +1,5 @@
 import { AddVocabularyToCollectionInput } from '@collection-client/dto/add-vocabulary-to-collection.input';
-import { CreateCollectionDto } from '@collection-client/dto/create-collection.dto';
+import { CreateCollectionInput } from '@collection-client/dto/create-collection.input';
 import { UserCollectionService } from '@collection-client/service/user-collection.service';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,21 +12,22 @@ import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-re
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { instanceToPlain } from 'class-transformer';
 import { LeanDocument, Model } from 'mongoose';
-import {
-  UserCollection,
-  UserCollectionDocument,
-} from '@collection-client/model/user-collection.model';
+import { UserCollection } from '@collection-client/model/user-collection.model';
+import { UserService, UserServiceToken } from '@user-client/user.service';
 
 export class UserCollectionServiceImpl implements UserCollectionService {
   constructor(
     @InjectModel(UserCollection.name)
-    private readonly userCollectionModel: Model<UserCollectionDocument>,
+    private readonly userCollectionModel: Model<UserCollection>,
     @Inject(CursorConnectionExecutorToken)
     private readonly cursorConnectionExecutor: CursorConnectionExecutor,
+    @Inject(UserServiceToken)
+    private readonly userService: UserService,
   ) {}
 
-  async createOne(dto: CreateCollectionDto): Promise<void> {
-    (await this.userCollectionModel.create(dto)).save();
+  async createOne(dto: CreateCollectionInput) {
+    const newCollection = await this.userCollectionModel.create(dto);
+    return newCollection.save();
   }
 
   async addVocabularyToCollection(
@@ -41,7 +42,6 @@ export class UserCollectionServiceImpl implements UserCollectionService {
     if (!collection) {
       throw new NotFoundException('Collection not found');
     }
-    console.log(createVocabDto);
 
     collection.vocabularies.push(instanceToPlain(createVocabDto) as any);
 
@@ -49,6 +49,19 @@ export class UserCollectionServiceImpl implements UserCollectionService {
       { _id: id },
       { $set: { vocabularies: collection.vocabularies } },
     );
+  }
+
+  public async assignCollectionToUser(
+    collection: UserCollection,
+    userId: string,
+  ): Promise<void> {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.ownedCollections.push(collection._id);
+    await this.userService.updateOne(user);
   }
 
   public async findMany(

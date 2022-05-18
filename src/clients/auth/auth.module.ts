@@ -8,6 +8,7 @@ import * as assert from 'assert';
 import { AuthServiceToken } from './auth.service';
 import { AuthServiceImpl } from '@auth/auth.service';
 import { UserModule } from '@user-client/user.module';
+import { JwtStrategy } from '@auth/jwt.strategy';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserModule } from '@user-client/user.module';
   ],
   providers: [
     AuthResolver,
+    JwtStrategy,
     {
       provide: GoogleAuthenticatorToken,
       useClass: GoogleAuthenticatorImpl,

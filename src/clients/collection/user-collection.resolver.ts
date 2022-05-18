@@ -1,9 +1,11 @@
-import { Inject } from '@nestjs/common';
+import { JwtPayload } from '@auth-client/entities/jwt-payload';
+import { JwtAuthGuard } from '@auth/jwt.guard';
+import { CurrentUser } from '@auth/user.decorator';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
 import { AddVocabularyToCollectionInput } from './dto/add-vocabulary-to-collection.input';
-import { CreateCollectionDto } from './dto/create-collection.dto';
+import { CreateCollectionInput } from './dto/create-collection.input';
 import { UserCollectionConnection } from './dto/user-collection.connection';
 import { UserCollectionType } from './dto/user-collection.type';
 import {
@@ -21,21 +23,27 @@ export class UserCollectionResolver {
   @Query(() => UserCollectionConnection, {
     name: 'selfCollections',
   })
+  @UseGuards(JwtAuthGuard)
   async getSelfCollections(@Args() args: PaginationArgs) {
-    const data = await this.userCollectionService.findMany(args);
-    console.log(data.edges[0].node);
-    return data;
+    return this.userCollectionService.findMany(args);
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
   async createSelfCollection(
-    @Args('createCollectionDto') dto: CreateCollectionDto,
+    @Args('createCollectionInput') dto: CreateCollectionInput,
+    @CurrentUser() user: JwtPayload,
   ) {
-    await this.userCollectionService.createOne(dto);
+    const collection = await this.userCollectionService.createOne(dto);
+    await this.userCollectionService.assignCollectionToUser(
+      collection,
+      user.sub,
+    );
     return true;
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
   async addVocabularyToCollection(
     @Args('addVocabularyToCollectionInput')
     input: AddVocabularyToCollectionInput,

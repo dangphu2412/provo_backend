@@ -1,10 +1,10 @@
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserServiceToken } from '@user-client/user.service';
-import { Types } from 'mongoose';
+import { Types, LeanDocument } from 'mongoose';
 import { UserCredential } from '../../../clients/auth/entities/user-credential';
 import { User } from '../../../clients/user/user.model';
-import { ObjectId } from '../../mongoose/type';
+import { ObjectId } from '@mongoose/type';
 import { UserServiceImpl } from '../../user/user.service';
 import { AuthServiceImpl } from '../auth.service';
 
@@ -47,12 +47,13 @@ describe('AuthService', () => {
       refreshToken: '',
       name: '',
     };
-    const mockUser: User & ObjectId = {
+    const mockUser: LeanDocument<User & ObjectId> = {
       _id: new Types.ObjectId(),
       name: '',
       email: '',
       avatarSrc: '',
       credit: 0,
+      ownedCollections: [],
     };
 
     jest.spyOn(userService, 'findByEmail').mockImplementation(() => {

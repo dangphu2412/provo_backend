@@ -1,5 +1,6 @@
+import { ObjectId } from '@mongoose/type';
 import { AddVocabularyToCollectionInput } from '@collection-client/dto/add-vocabulary-to-collection.input';
-import { CreateCollectionDto } from '@collection-client/dto/create-collection.dto';
+import { CreateCollectionInput } from '@collection-client/dto/create-collection.input';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { LeanDocument } from 'mongoose';
@@ -11,9 +12,12 @@ export interface UserCollectionService {
   findMany(
     args: PaginationArgs,
   ): Promise<GraphqlConnection<LeanDocument<UserCollection>>>;
-
-  createOne(dto: CreateCollectionDto): Promise<void>;
+  createOne(dto: CreateCollectionInput): Promise<UserCollection & ObjectId>;
   addVocabularyToCollection(
     input: AddVocabularyToCollectionInput,
+  ): Promise<void>;
+  assignCollectionToUser(
+    collection: UserCollection,
+    userId: string,
   ): Promise<void>;
 }

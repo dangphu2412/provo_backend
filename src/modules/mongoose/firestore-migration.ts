@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '@user-client/user.model';
+import { User } from '@user-client/user.model';
 import { open, readdir } from 'fs/promises';
 import { Model } from 'mongoose';
 
@@ -21,7 +21,7 @@ interface FirestoreUser {
 @Injectable()
 export class FireStoreMigration {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
   public async migrate() {

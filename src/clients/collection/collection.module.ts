@@ -2,6 +2,7 @@ import { ProviderCollectionServiceImpl } from '@collection/provider-collection.s
 import { UserCollectionServiceImpl } from '@collection/user-collection.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserModule } from '@user-client/user.module';
 import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import {
   ProviderCollection,
@@ -23,6 +24,7 @@ import { UserCollectionResolver } from './user-collection.resolver';
       { name: UserCollection.name, schema: UserCollectionSchema },
     ]),
     VocabularyModule,
+    UserModule,
   ],
   providers: [
     ProviderCollectionResolver,

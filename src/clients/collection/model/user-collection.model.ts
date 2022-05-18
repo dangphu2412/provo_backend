@@ -5,10 +5,8 @@ import {
 } from '@vocabulary-client/vocabulary.model';
 import { Document } from 'mongoose';
 
-export type UserCollectionDocument = UserCollection & Document;
-
 @Schema()
-export class UserCollection {
+export class UserCollection extends Document {
   @Prop()
   name: string;
 
