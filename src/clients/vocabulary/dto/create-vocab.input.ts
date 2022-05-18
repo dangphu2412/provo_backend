@@ -1,17 +1,17 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
-import { DefinitionDto } from './definition.dto';
+import { DefinitionInput } from './definition.input';
 
 @InputType()
-export class CreateVocabDto {
+export class CreateVocabInput {
   @Field()
   @IsString()
   @IsNotEmpty()
   public word: string;
 
-  @Field(() => [DefinitionDto])
+  @Field(() => [DefinitionInput])
   @ValidateNested({ each: true })
-  @Type(() => DefinitionDto)
-  public definitions: DefinitionDto[];
+  @Type(() => DefinitionInput)
+  public definitions: DefinitionInput[];
 }

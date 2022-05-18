@@ -1,15 +1,15 @@
 import { ObjectId } from '@mongoose/type';
 import { LeanDocument, Types } from 'mongoose';
-import { CreateVocabDto } from './dto/create-vocab.dto';
+import { CreateVocabInput } from './dto/create-vocab.input';
 import { Vocabulary } from './vocabulary.model';
 
 export const VocabularyServiceToken = 'VocabularyService';
 
 export interface VocabularyService {
-  createMany(vocabularies: CreateVocabDto[]): Promise<void>;
+  createMany(vocabularies: CreateVocabInput[]): Promise<void>;
   findByWords(words: string[]): Promise<(Vocabulary & ObjectId)[]>;
   findByIds(
     ids: Types.ObjectId[],
   ): Promise<LeanDocument<Vocabulary & ObjectId>[]>;
-  upsertMany(vocabularies: CreateVocabDto[]): Promise<void>;
+  upsertMany(vocabularies: CreateVocabInput[]): Promise<void>;
 }

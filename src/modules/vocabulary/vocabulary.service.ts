@@ -3,7 +3,7 @@ import { BulkWriteOperation } from '@mongoose/operation.type';
 import { Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Definition } from '@vocabulary-client/definition.model';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
+import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
 import { Vocabulary } from '@vocabulary-client/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { keyBy, uniqBy } from 'lodash';
@@ -36,7 +36,7 @@ export class VocabularyServiceImpl implements VocabularyService {
       .exec();
   }
 
-  public async createMany(vocabularies: CreateVocabDto[]): Promise<void> {
+  public async createMany(vocabularies: CreateVocabInput[]): Promise<void> {
     try {
       await this.vocabularyModel.insertMany(vocabularies, {
         limit: LIMIT_PER_BULK_WRITE,
@@ -49,7 +49,7 @@ export class VocabularyServiceImpl implements VocabularyService {
     }
   }
 
-  public async upsertMany(createDtos: CreateVocabDto[]): Promise<void> {
+  public async upsertMany(createDtos: CreateVocabInput[]): Promise<void> {
     const words = createDtos.map((dto) => dto.word);
     const existedVocabularies = await this.findByWords(words);
 
@@ -78,7 +78,7 @@ export class VocabularyServiceImpl implements VocabularyService {
   }
 
   // TODO: Separate this operation into mongoose module
-  private toBulkWriteOperation(data: CreateVocabDto[]): BulkWriteOperation[] {
+  private toBulkWriteOperation(data: CreateVocabInput[]): BulkWriteOperation[] {
     return data.map((item) => {
       return {
         updateOne: {

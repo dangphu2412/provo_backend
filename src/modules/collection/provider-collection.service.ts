@@ -1,14 +1,8 @@
-import {
-  VocabularyService,
-  VocabularyServiceToken,
-} from '@vocabulary-client/vocabulary.service';
-import { CreateProviderCollectionDto } from '@collection-client/dto/create-provider-collection.dto';
-import {
-  ProviderCollection,
-  ProviderCollectionDocument,
-} from '@collection-client/model/provider-collection.model';
+import { CreateProviderCollectionDto } from '@collection-client/entities/create-provider-collection.dto';
+import { ProviderCollection } from '@collection-client/entities/model/provider-collection.model';
 import { ProviderCollectionService } from '@collection-client/service/provider-collection.service';
 import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
+import { BulkWriteOperation } from '@mongoose/operation.type';
 import { ObjectId } from '@mongoose/type';
 import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -19,10 +13,13 @@ import {
 } from '@pagination/cursor-connection-excutor';
 import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
+import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
+import {
+  VocabularyService,
+  VocabularyServiceToken,
+} from '@vocabulary-client/vocabulary.service';
 import { isEmpty } from 'lodash';
 import { LeanDocument, Model } from 'mongoose';
-import { BulkWriteOperation } from '@mongoose/operation.type';
 
 export class ProviderCollectionServiceImpl
   implements ProviderCollectionService
@@ -31,7 +28,7 @@ export class ProviderCollectionServiceImpl
 
   constructor(
     @InjectModel(ProviderCollection.name)
-    private readonly providerCollectionModel: Model<ProviderCollectionDocument>,
+    private readonly providerCollectionModel: Model<ProviderCollection>,
     @Inject(CursorConnectionExecutorToken)
     private readonly cursorConnectionExecutor: CursorConnectionExecutor,
     @Inject(VocabularyServiceToken)
@@ -42,7 +39,7 @@ export class ProviderCollectionServiceImpl
 
   createMany(dtos: CreateProviderCollectionDto[]): Promise<void>;
   createMany(
-    dtosOrVocabulariesKeyByCollectionName: Map<string, CreateVocabDto[]>,
+    dtosOrVocabulariesKeyByCollectionName: Map<string, CreateVocabInput[]>,
   ): Promise<void>;
   async createMany(dtosOrVocabulariesKeyByCollectionName: any): Promise<void> {
     if (Array.isArray(dtosOrVocabulariesKeyByCollectionName)) {
@@ -59,7 +56,7 @@ export class ProviderCollectionServiceImpl
         );
       }
     } else {
-      const vocabulariesKeyByCollectionName: Map<string, CreateVocabDto[]> =
+      const vocabulariesKeyByCollectionName: Map<string, CreateVocabInput[]> =
         dtosOrVocabulariesKeyByCollectionName;
 
       const collectionNames = Array.from(
@@ -74,7 +71,7 @@ export class ProviderCollectionServiceImpl
         const name = collection.name;
         if (vocabulariesKeyByCollectionName.has(name)) {
           const vocabNames = (
-            vocabulariesKeyByCollectionName.get(name) as CreateVocabDto[]
+            vocabulariesKeyByCollectionName.get(name) as CreateVocabInput[]
           ).map((vocab) => vocab.word);
 
           const vocabs = await this.vocabularyService.findByWords(vocabNames);

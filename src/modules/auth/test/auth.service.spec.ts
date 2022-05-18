@@ -26,7 +26,7 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn(),
+            signAsync: jest.fn(),
           },
         },
       ],
@@ -43,8 +43,8 @@ describe('AuthService', () => {
 
   it('loginByGoogleUser success', async () => {
     const userCredential: UserCredential = {
-      accessToken: '',
-      refreshToken: '',
+      accessToken: 'token',
+      refreshToken: 'Currently, we do not support refresh token',
       name: '',
     };
     const mockUser: LeanDocument<User & ObjectId> = {
@@ -60,7 +60,9 @@ describe('AuthService', () => {
       return Promise.resolve(mockUser);
     });
 
-    jest.spyOn(jwtService, 'sign').mockImplementation(() => '');
+    jest
+      .spyOn(jwtService, 'signAsync')
+      .mockImplementation(() => Promise.resolve('token'));
 
     expect(
       await service.loginByGoogleUser({

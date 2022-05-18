@@ -7,11 +7,11 @@ import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import {
   ProviderCollection,
   ProviderCollectionSchema,
-} from './model/provider-collection.model';
+} from './entities/model/provider-collection.model';
 import {
   UserCollection,
   UserCollectionSchema,
-} from './model/user-collection.model';
+} from './entities/model/user-collection.model';
 import { ProviderCollectionResolver } from './provider-collection.resolver';
 import { ProviderCollectionServiceToken } from './service/provider-collection.service';
 import { UserCollectionServiceToken } from './service/user-collection.service';

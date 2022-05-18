@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
+import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
 import { Type } from 'class-transformer';
 import { IsMongoId, ValidateNested } from 'class-validator';
 
@@ -9,8 +9,8 @@ export class AddVocabularyToCollectionInput {
   @IsMongoId()
   id: string;
 
-  @Field(() => CreateVocabDto)
+  @Field(() => CreateVocabInput)
   @ValidateNested()
-  @Type(() => CreateVocabDto)
-  createVocabDto: CreateVocabDto;
+  @Type(() => CreateVocabInput)
+  createVocabDto: CreateVocabInput;
 }

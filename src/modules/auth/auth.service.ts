@@ -3,8 +3,9 @@ import { UserCredential } from '@auth-client/entities/user-credential';
 import { GoogleUser } from '@auth-client/google.authenticator';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { CreateGoogleUserDto } from '@user-client/dto/create-user.dto';
 import { UserService, UserServiceToken } from '@user-client/user.service';
-import { JwtPayload } from './../../clients/auth/entities/jwt-payload';
+import { JwtPayload } from '@auth-client/entities/jwt-payload';
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
@@ -40,11 +41,7 @@ export class AuthServiceImpl implements AuthService {
     let user = await this.userService.findByEmail(googleUser.email);
 
     if (!user) {
-      user = await this.userService.createOne({
-        email: googleUser.email,
-        avatar: googleUser.avatar,
-        fullName: googleUser.fullName,
-      });
+      user = await this.registerGoogleUser(googleUser);
     }
 
     const jwtPayload: JwtPayload = {
@@ -52,12 +49,26 @@ export class AuthServiceImpl implements AuthService {
       resourceAccess: {
         client: ['read'],
       },
+      realmAccess: {},
     };
 
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(jwtPayload, { expiresIn: '10h' }),
+      'Currently, we do not support refresh token',
+    ]);
+
     return {
-      accessToken: this.jwtService.sign(jwtPayload, { expiresIn: '10h' }),
-      refreshToken: this.jwtService.sign(user._id, { expiresIn: '10d' }),
+      accessToken,
+      refreshToken,
       name: user.name,
     };
+  }
+
+  private registerGoogleUser(googleUser: GoogleUser) {
+    const createUserDto = new CreateGoogleUserDto();
+    createUserDto.email = googleUser.email;
+    createUserDto.avatar = googleUser.avatar;
+    createUserDto.fullName = googleUser.fullName;
+    return this.userService.createOne(createUserDto);
   }
 }

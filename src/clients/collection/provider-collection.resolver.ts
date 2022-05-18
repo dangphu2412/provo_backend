@@ -10,7 +10,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
+import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
 import { FileUploadDto } from '@vocabulary-client/dto/file-upload.dto';
 import { VocabularyType } from '@vocabulary-client/dto/vocabulary.type';
 import { mapSheetRowsToCreateVocabDtos } from '@vocabulary-client/sheet-to-create-dto.mapper';
@@ -20,8 +20,8 @@ import {
   VocabularyServiceToken,
 } from '@vocabulary-client/vocabulary.service';
 import { GraphQLUpload } from 'graphql-upload';
-import { ProviderCollectionConnection } from './dto/provider-collection.connection';
-import { ProviderCollectionType } from './dto/provider-collection.type';
+import { ProviderCollectionConnection } from './entities/object-type/provider-collection.connection';
+import { ProviderCollectionType } from './entities/object-type/provider-collection.type';
 import {
   ProviderCollectionService,
   ProviderCollectionServiceToken,
@@ -60,7 +60,10 @@ export class ProviderCollectionResolver {
     fileUpload: FileUploadDto,
   ) {
     const sheetProcessor = new SheetProcessor(fileUpload);
-    const vocabulariesKeyByCollectionName = new Map<string, CreateVocabDto[]>();
+    const vocabulariesKeyByCollectionName = new Map<
+      string,
+      CreateVocabInput[]
+    >();
 
     sheetProcessor.define(async (rows) => {
       const dtos = mapSheetRowsToCreateVocabDtos(rows);

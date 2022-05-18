@@ -1,4 +1,4 @@
-import { CreateVocabDto } from './dto/create-vocab.dto';
+import { CreateVocabInput } from './dto/create-vocab.input';
 
 interface ClientSheetRow {
   word: string;
@@ -10,7 +10,7 @@ interface ClientSheetRow {
 
 export function mapSheetRowsToCreateVocabDtos(
   sheetRows: Partial<ClientSheetRow>[],
-): CreateVocabDto[] {
+): CreateVocabInput[] {
   return sheetRows.map((row) => {
     return {
       word: row.word ?? '',
@@ -21,6 +21,6 @@ export function mapSheetRowsToCreateVocabDtos(
           examples: row.example ? [row.example] : [],
         },
       ],
-    } as CreateVocabDto;
+    } as CreateVocabInput;
   });
 }

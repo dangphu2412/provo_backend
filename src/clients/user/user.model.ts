@@ -1,4 +1,4 @@
-import { UserCollection } from '@collection-client/model/user-collection.model';
+import { UserCollection } from '@collection-client/entities/model/user-collection.model';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 

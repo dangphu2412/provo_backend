@@ -1,19 +1,17 @@
 import { ObjectId } from '@mongoose/type';
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CreateUserDto } from '@user-client/dto/create-user.dto';
+import { CreateGoogleUserDto } from '@user-client/dto/create-user.dto';
 import { User } from '@user-client/user.model';
 import { UserService } from '@user-client/user.service';
-import { Model, LeanDocument } from 'mongoose';
+import { LeanDocument, Model } from 'mongoose';
 
-@Injectable()
 export class UserServiceImpl implements UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  async createOne(dto: CreateUserDto) {
-    return (await this.userModel.create(dto)).save();
+  createOne(dto: CreateGoogleUserDto) {
+    return this.userModel.create(dto);
   }
 
   findByEmail(email: string) {

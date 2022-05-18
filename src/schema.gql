@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 input AddVocabularyToCollectionInput {
-  createVocabDto: CreateVocabDto!
+  createVocabDto: CreateVocabInput!
   id: String!
 }
 
@@ -12,12 +12,12 @@ input CreateCollectionInput {
   name: String!
 }
 
-input CreateVocabDto {
-  definitions: [DefinitionDto!]!
+input CreateVocabInput {
+  definitions: [DefinitionInput!]!
   word: String!
 }
 
-input DefinitionDto {
+input DefinitionInput {
   examples: [String!]
   meaning: String!
   type: String
@@ -32,7 +32,7 @@ type DefinitionType {
 type Mutation {
   addVocabularyToCollection(addVocabularyToCollectionInput: AddVocabularyToCollectionInput!): Boolean!
   createSelfCollection(createCollectionInput: CreateCollectionInput!): Boolean!
-  createVocabularies(vocabularies: [CreateVocabDto!]!): Boolean
+  createVocabularies(vocabularies: [CreateVocabInput!]!): Boolean
   getTestCredential: UserCredential!
   loginByGoogleAccessToken(idToken: String!): UserCredential!
   uploadVocabularies(file: Upload!): Boolean
@@ -65,7 +65,6 @@ type ProviderCollectionTypeEdge {
 
 type Query {
   providerCollections(after: String, before: String, first: Int, last: Int): ProviderCollectionConnection!
-  sayHello: String!
   selfCollections(after: String, before: String, first: Int, last: Int): UserCollectionConnection!
 }
 

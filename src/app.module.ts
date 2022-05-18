@@ -5,7 +5,7 @@ import { VocabularyModule } from '@vocabulary-client/vocabulary.module';
 import { AuthModule } from './clients/auth/auth.module';
 import { CollectionModule } from './clients/collection/collection.module';
 import { UserModule } from './clients/user/user.module';
-import { HealthModule } from './modules/health-check/health.module';
+import { HealthModule } from './clients/health-check/health.module';
 
 @Module({
   imports: [

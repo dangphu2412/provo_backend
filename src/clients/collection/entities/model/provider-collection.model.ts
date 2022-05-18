@@ -2,10 +2,8 @@ import { Vocabulary } from '@vocabulary-client/vocabulary.model';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
-export type ProviderCollectionDocument = ProviderCollection & Document;
-
 @Schema()
-export class ProviderCollection {
+export class ProviderCollection extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: Vocabulary.name }] })
   vocabularies: Vocabulary[];
 

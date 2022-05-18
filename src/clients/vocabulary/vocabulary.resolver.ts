@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { CreateVocabDto } from './dto/create-vocab.dto';
+import { CreateVocabInput } from './dto/create-vocab.input';
 import {
   VocabularyService,
   VocabularyServiceToken,
@@ -16,9 +16,9 @@ export class VocabularyResolver {
   async createVocabularies(
     @Args({
       name: 'vocabularies',
-      type: () => [CreateVocabDto],
+      type: () => [CreateVocabInput],
     })
-    createVocabulariesDto: CreateVocabDto[],
+    createVocabulariesDto: CreateVocabInput[],
   ) {
     await this.vocabularyService.createMany(createVocabulariesDto);
   }

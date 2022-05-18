@@ -1,9 +1,9 @@
+import { CreateProviderCollectionDto } from '@collection-client/entities/create-provider-collection.dto';
+import { ProviderCollection } from '@collection-client/entities/model/provider-collection.model';
 import { ObjectId } from '@mongoose/type';
-import { CreateProviderCollectionDto } from '@collection-client/dto/create-provider-collection.dto';
-import { ProviderCollection } from '@collection-client/model/provider-collection.model';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabDto } from '@vocabulary-client/dto/create-vocab.dto';
+import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
 import { LeanDocument } from 'mongoose';
 
 export const ProviderCollectionServiceToken = 'ProviderCollectionService';
@@ -18,6 +18,6 @@ export interface ProviderCollectionService {
 
   createMany(dtos: CreateProviderCollectionDto[]): Promise<void>;
   createMany(
-    vocabulariesKeyByCollectionName: Map<string, CreateVocabDto[]>,
+    vocabulariesKeyByCollectionName: Map<string, CreateVocabInput[]>,
   ): Promise<void>;
 }

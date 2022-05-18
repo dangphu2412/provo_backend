@@ -1,9 +1,8 @@
-import { UserServiceToken } from './user.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './user.model';
 import { UserServiceImpl } from '@user/user.service';
-import { UserResolver } from './user.resolver';
+import { User, UserSchema } from './user.model';
+import { UserServiceToken } from './user.service';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { UserResolver } from './user.resolver';
       provide: UserServiceToken,
       useClass: UserServiceImpl,
     },
-    UserResolver,
   ],
   exports: [UserServiceToken],
 })

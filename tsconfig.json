@@ -63,6 +63,9 @@
       ],
       "@mongoose/*": [
         "./src/modules/mongoose/*"
+      ],
+      "@graphql/*": [
+        "./src/modules/graphql/*"
       ]
     }
   },

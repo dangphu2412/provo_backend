@@ -1,5 +1,5 @@
-import { AddVocabularyToCollectionInput } from '@collection-client/dto/add-vocabulary-to-collection.input';
-import { CreateCollectionInput } from '@collection-client/dto/create-collection.input';
+import { AddVocabularyToCollectionInput } from '@collection-client/entities/input/add-vocabulary-to-collection.input';
+import { CreateCollectionInput } from '@collection-client/entities/input/create-collection.input';
 import { UserCollectionService } from '@collection-client/service/user-collection.service';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,7 +12,7 @@ import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-re
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { instanceToPlain } from 'class-transformer';
 import { LeanDocument, Model } from 'mongoose';
-import { UserCollection } from '@collection-client/model/user-collection.model';
+import { UserCollection } from '@collection-client/entities/model/user-collection.model';
 import { UserService, UserServiceToken } from '@user-client/user.service';
 
 export class UserCollectionServiceImpl implements UserCollectionService {

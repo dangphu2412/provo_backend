@@ -1,13 +1,13 @@
-import { JwtPayload } from '@auth-client/entities/jwt-payload';
+import { UserFromAuth } from '@auth-client/entities/current-user';
 import { JwtAuthGuard } from '@auth/jwt.guard';
 import { CurrentUser } from '@auth/user.decorator';
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { AddVocabularyToCollectionInput } from './dto/add-vocabulary-to-collection.input';
-import { CreateCollectionInput } from './dto/create-collection.input';
-import { UserCollectionConnection } from './dto/user-collection.connection';
-import { UserCollectionType } from './dto/user-collection.type';
+import { AddVocabularyToCollectionInput } from './entities/input/add-vocabulary-to-collection.input';
+import { CreateCollectionInput } from './entities/input/create-collection.input';
+import { UserCollectionConnection } from './entities/object-type/user-collection.connection';
+import { UserCollectionType } from './entities/object-type/user-collection.type';
 import {
   UserCollectionService,
   UserCollectionServiceToken,
@@ -20,28 +20,6 @@ export class UserCollectionResolver {
     private readonly userCollectionService: UserCollectionService,
   ) {}
 
-  @Query(() => UserCollectionConnection, {
-    name: 'selfCollections',
-  })
-  @UseGuards(JwtAuthGuard)
-  async getSelfCollections(@Args() args: PaginationArgs) {
-    return this.userCollectionService.findMany(args);
-  }
-
-  @Mutation(() => Boolean)
-  @UseGuards(JwtAuthGuard)
-  async createSelfCollection(
-    @Args('createCollectionInput') dto: CreateCollectionInput,
-    @CurrentUser() user: JwtPayload,
-  ) {
-    const collection = await this.userCollectionService.createOne(dto);
-    await this.userCollectionService.assignCollectionToUser(
-      collection,
-      user.sub,
-    );
-    return true;
-  }
-
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard)
   async addVocabularyToCollection(
@@ -50,5 +28,28 @@ export class UserCollectionResolver {
   ) {
     await this.userCollectionService.addVocabularyToCollection(input);
     return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseGuards(JwtAuthGuard)
+  async createSelfCollection(
+    @Args('createCollectionInput') input: CreateCollectionInput,
+    @CurrentUser() user: UserFromAuth,
+  ) {
+    const collection = await this.userCollectionService.createOne(input);
+
+    await this.userCollectionService.assignCollectionToUser(
+      collection,
+      user.id,
+    );
+    return true;
+  }
+
+  @Query(() => UserCollectionConnection, {
+    name: 'selfCollections',
+  })
+  @UseGuards(JwtAuthGuard)
+  async findSelfCollections(@Args() paginationArgs: PaginationArgs) {
+    return this.userCollectionService.findMany(paginationArgs);
   }
 }
