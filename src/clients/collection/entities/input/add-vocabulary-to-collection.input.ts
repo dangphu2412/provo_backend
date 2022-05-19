@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
+import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab.input';
 import { Type } from 'class-transformer';
 import { IsMongoId, ValidateNested } from 'class-validator';
 

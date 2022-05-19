@@ -8,9 +8,7 @@ export interface EdgeType<T> {
 }
 export interface GraphqlConnection<T> {
   edges: EdgeType<T>[];
-
   pageInfo: PageInfo;
-
   totalCount: number | undefined;
 }
 /**

@@ -1,6 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { CreateVocabInput } from './dto/create-vocab.input';
+import { CreateVocabInput } from './entities/input/create-vocab.input';
 import {
   VocabularyService,
   VocabularyServiceToken,

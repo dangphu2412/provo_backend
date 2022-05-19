@@ -13,7 +13,7 @@ import {
 } from '@pagination/cursor-connection-excutor';
 import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
+import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab.input';
 import {
   VocabularyService,
   VocabularyServiceToken,

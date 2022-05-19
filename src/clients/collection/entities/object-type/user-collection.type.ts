@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { VocabularyType } from '@vocabulary-client/dto/vocabulary.type';
+import { VocabularyType } from '@vocabulary-client/entities/object-type/vocabulary.type';
 
 @ObjectType()
 export class UserCollectionType {

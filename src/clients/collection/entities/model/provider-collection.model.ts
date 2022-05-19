@@ -1,4 +1,4 @@
-import { Vocabulary } from '@vocabulary-client/vocabulary.model';
+import { Vocabulary } from '@vocabulary-client/entities/model/vocabulary.model';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 

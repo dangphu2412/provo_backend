@@ -1,7 +1,7 @@
 import { ObjectId } from '@mongoose/type';
 import { LeanDocument, Types } from 'mongoose';
-import { CreateVocabInput } from './dto/create-vocab.input';
-import { Vocabulary } from './vocabulary.model';
+import { CreateVocabInput } from './entities/input/create-vocab.input';
+import { Vocabulary } from './entities/model/vocabulary.model';
 
 export const VocabularyServiceToken = 'VocabularyService';
 

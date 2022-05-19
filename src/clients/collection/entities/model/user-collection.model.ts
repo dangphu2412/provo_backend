@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   Vocabulary,
   VocabularySchema,
-} from '@vocabulary-client/vocabulary.model';
+} from '@vocabulary-client/entities/model/vocabulary.model';
 import { Document } from 'mongoose';
 
 @Schema()

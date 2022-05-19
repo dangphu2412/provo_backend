@@ -6,7 +6,7 @@ import {
 import { Inject, Injectable, Scope } from '@nestjs/common';
 import * as DataLoader from 'dataloader';
 import { ObjectId } from '@mongoose/type';
-import { Vocabulary } from './vocabulary.model';
+import { Vocabulary } from '@vocabulary-client/entities/model/vocabulary.model';
 
 @Injectable({
   scope: Scope.REQUEST,

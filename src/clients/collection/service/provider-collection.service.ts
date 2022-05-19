@@ -3,7 +3,7 @@ import { ProviderCollection } from '@collection-client/entities/model/provider-c
 import { ObjectId } from '@mongoose/type';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabInput } from '@vocabulary-client/dto/create-vocab.input';
+import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab.input';
 import { LeanDocument } from 'mongoose';
 
 export const ProviderCollectionServiceToken = 'ProviderCollectionService';

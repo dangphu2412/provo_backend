@@ -3,7 +3,10 @@ import { WorkBookReader } from '@excel/work-book-reader';
 import { FileUpload } from 'graphql-upload';
 import { SheetRows } from './sheet-rows';
 
-export type SheetConsumer = (sheetRows: SheetRows) => Promise<void>;
+export type SheetConsumer = (
+  sheetRows: SheetRows,
+  sheetName: string,
+) => Promise<void>;
 
 export class SheetProcessor {
   private workBookReader: WorkBookReader;
@@ -24,7 +27,7 @@ export class SheetProcessor {
       try {
         const sheet = workBook.sheets[sheetName];
         const sheetRows = CsvUtils.fromSheetToRows(sheet);
-        await this.consumer(sheetRows);
+        await this.consumer(sheetRows, sheetName);
       } catch (error) {
         this.workBookReader.clean();
         throw error;

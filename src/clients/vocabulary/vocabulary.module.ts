@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { VocabularyServiceImpl } from '@vocabulary/vocabulary.service';
-import { VocabularyLoader } from './vocabulary-loader';
-import { Vocabulary, VocabularySchema } from './vocabulary.model';
+import { VocabularyLoader } from '@vocabulary/vocabulary-loader';
+import {
+  Vocabulary,
+  VocabularySchema,
+} from './entities/model/vocabulary.model';
 import { VocabularyResolver } from './vocabulary.resolver';
 import { VocabularyServiceToken } from './vocabulary.service';
 
