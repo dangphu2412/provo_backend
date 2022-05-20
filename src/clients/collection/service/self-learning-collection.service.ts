@@ -6,9 +6,10 @@ import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { LeanDocument } from 'mongoose';
 import { UserCollection } from '../entities/model/user-collection.model';
 
-export const UserCollectionServiceToken = 'UserCollectionServiceToken';
+export const SelfLearningCollectionServiceToken =
+  'SelfLearningCollectionServiceToken';
 
-export interface UserCollectionService {
+export interface SelfLearningCollectionService {
   findMany(
     args: PaginationArgs,
   ): Promise<GraphqlConnection<LeanDocument<UserCollection>>>;

@@ -7,7 +7,7 @@ import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab
 import { Vocabulary } from '@vocabulary-client/entities/model/vocabulary.model';
 import { VocabularyService } from '@vocabulary-client/vocabulary.service';
 import { keyBy, uniqBy } from 'lodash';
-import { Model, Types } from 'mongoose';
+import { Model, Types, LeanDocument } from 'mongoose';
 
 export class VocabularyServiceImpl implements VocabularyService {
   private readonly logger: Logger;
@@ -20,11 +20,14 @@ export class VocabularyServiceImpl implements VocabularyService {
   }
 
   public async findByWords(words: string[]) {
-    return this.vocabularyModel.find({
-      word: {
-        $in: words,
-      },
-    });
+    return this.vocabularyModel
+      .find({
+        word: {
+          $in: words,
+        },
+      })
+      .lean()
+      .exec();
   }
 
   public findByIds(ids: Types.ObjectId[]) {
@@ -78,7 +81,9 @@ export class VocabularyServiceImpl implements VocabularyService {
   }
 
   // TODO: Separate this operation into mongoose module
-  private toBulkWriteOperation(data: CreateVocabInput[]): BulkWriteOperation[] {
+  private toBulkWriteOperation(
+    data: CreateVocabInput[],
+  ): BulkWriteOperation<LeanDocument<Vocabulary>>[] {
     return data.map((item) => {
       return {
         updateOne: {

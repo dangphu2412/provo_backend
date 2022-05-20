@@ -7,7 +7,7 @@ export const VocabularyServiceToken = 'VocabularyService';
 
 export interface VocabularyService {
   createMany(vocabularies: CreateVocabInput[]): Promise<void>;
-  findByWords(words: string[]): Promise<(Vocabulary & ObjectId)[]>;
+  findByWords(words: string[]): Promise<LeanDocument<Vocabulary & ObjectId>[]>;
   findByIds(
     ids: Types.ObjectId[],
   ): Promise<LeanDocument<Vocabulary & ObjectId>[]>;

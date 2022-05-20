@@ -15,7 +15,7 @@ export class AuthServiceImpl implements AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async mockLoginByGoogleUser(): Promise<UserCredential> {
+  public async mockLoginByGoogleUser(): Promise<UserCredential> {
     const user = await this.userService.findByEmail('test@gmail.com');
 
     if (!user) {
@@ -37,7 +37,9 @@ export class AuthServiceImpl implements AuthService {
     };
   }
 
-  async loginByGoogleUser(googleUser: GoogleUser): Promise<UserCredential> {
+  public async loginByGoogleUser(
+    googleUser: GoogleUser,
+  ): Promise<UserCredential> {
     let user = await this.userService.findByEmail(googleUser.email);
 
     if (!user) {

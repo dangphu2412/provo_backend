@@ -9,15 +9,15 @@ import { CreateCollectionInput } from './entities/input/create-collection.input'
 import { UserCollectionConnection } from './entities/object-type/user-collection.connection';
 import { UserCollectionType } from './entities/object-type/user-collection.type';
 import {
-  UserCollectionService,
-  UserCollectionServiceToken,
-} from './service/user-collection.service';
+  SelfLearningCollectionService,
+  SelfLearningCollectionServiceToken,
+} from './service/self-learning-collection.service';
 
 @Resolver(() => UserCollectionType)
-export class UserCollectionResolver {
+export class SelfLearningCollectionResolver {
   constructor(
-    @Inject(UserCollectionServiceToken)
-    private readonly userCollectionService: UserCollectionService,
+    @Inject(SelfLearningCollectionServiceToken)
+    private readonly selfLearningCollectionService: SelfLearningCollectionService,
   ) {}
 
   @Mutation(() => Boolean)
@@ -26,7 +26,7 @@ export class UserCollectionResolver {
     @Args('addVocabularyToCollectionInput')
     input: AddVocabularyToCollectionInput,
   ) {
-    await this.userCollectionService.addVocabularyToCollection(input);
+    await this.selfLearningCollectionService.addVocabularyToCollection(input);
     return true;
   }
 
@@ -36,9 +36,11 @@ export class UserCollectionResolver {
     @Args('createCollectionInput') input: CreateCollectionInput,
     @CurrentUser() user: UserFromAuth,
   ) {
-    const collection = await this.userCollectionService.createOne(input);
+    const collection = await this.selfLearningCollectionService.createOne(
+      input,
+    );
 
-    await this.userCollectionService.assignCollectionToUser(
+    await this.selfLearningCollectionService.assignCollectionToUser(
       collection,
       user.id,
     );
@@ -50,6 +52,6 @@ export class UserCollectionResolver {
   })
   @UseGuards(JwtAuthGuard)
   async findSelfCollections(@Args() paginationArgs: PaginationArgs) {
-    return this.userCollectionService.findMany(paginationArgs);
+    return this.selfLearningCollectionService.findMany(paginationArgs);
   }
 }

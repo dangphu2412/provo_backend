@@ -1,5 +1,4 @@
 import { JwtAuthGuard } from '@auth/jwt.guard';
-import { SheetProcessor } from '@excel/sheet-reader';
 import { Inject, UseGuards } from '@nestjs/common';
 import {
   Args,
@@ -11,29 +10,27 @@ import {
 } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { FileUploadDto } from '@vocabulary-client/entities/file-upload.dto';
-import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab.input';
 import { VocabularyType } from '@vocabulary-client/entities/object-type/vocabulary.type';
-import {
-  VocabularyService,
-  VocabularyServiceToken,
-} from '@vocabulary-client/vocabulary.service';
 import { VocabularyLoader } from '@vocabulary/vocabulary-loader';
 import { GraphQLUpload } from 'graphql-upload';
-import { SheetRowsConverter } from '@vocabulary/sheet-to-create-dto.converter';
 import { ProviderCollectionConnection } from './entities/object-type/provider-collection.connection';
 import { ProviderCollectionType } from './entities/object-type/provider-collection.type';
 import {
   ProviderCollectionService,
   ProviderCollectionServiceToken,
 } from './service/provider-collection.service';
+import {
+  SyncSheetToProviderCollection,
+  SyncSheetToProviderCollectionToken,
+} from './service/sync-sheet-to-provider-collection';
 
 @Resolver(() => ProviderCollectionType)
 export class ProviderCollectionResolver {
   constructor(
     @Inject(ProviderCollectionServiceToken)
     private readonly providerCollectionService: ProviderCollectionService,
-    @Inject(VocabularyServiceToken)
-    private readonly vocabularyService: VocabularyService,
+    @Inject(SyncSheetToProviderCollectionToken)
+    private readonly syncSheetToProviderCollection: SyncSheetToProviderCollection,
     private readonly vocabularyLoader: VocabularyLoader,
   ) {}
 
@@ -59,26 +56,6 @@ export class ProviderCollectionResolver {
     })
     fileUpload: FileUploadDto,
   ) {
-    const sheetProcessor = new SheetProcessor(fileUpload);
-    const vocabulariesKeyByCollectionName = new Map<
-      string,
-      CreateVocabInput[]
-    >();
-
-    sheetProcessor.define(async (rows, sheetName) => {
-      const dtos = SheetRowsConverter.convert(rows);
-
-      await this.vocabularyService.upsertMany(dtos);
-
-      if (!!sheetName) {
-        vocabulariesKeyByCollectionName.set(sheetName, dtos);
-      }
-    });
-
-    await sheetProcessor.process();
-
-    await this.providerCollectionService.createMany(
-      vocabulariesKeyByCollectionName,
-    );
+    await this.syncSheetToProviderCollection.sync(fileUpload);
   }
 }

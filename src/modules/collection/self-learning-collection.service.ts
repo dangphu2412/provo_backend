@@ -1,6 +1,6 @@
 import { AddVocabularyToCollectionInput } from '@collection-client/entities/input/add-vocabulary-to-collection.input';
 import { CreateCollectionInput } from '@collection-client/entities/input/create-collection.input';
-import { UserCollectionService } from '@collection-client/service/user-collection.service';
+import { SelfLearningCollectionService } from '@collection-client/service/self-learning-collection.service';
 import { Inject, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphqlConnection } from '@pagination/connection.factory';
@@ -15,7 +15,9 @@ import { LeanDocument, Model } from 'mongoose';
 import { UserCollection } from '@collection-client/entities/model/user-collection.model';
 import { UserService, UserServiceToken } from '@user-client/user.service';
 
-export class UserCollectionServiceImpl implements UserCollectionService {
+export class SelfLearningCollectionServiceImpl
+  implements SelfLearningCollectionService
+{
   constructor(
     @InjectModel(UserCollection.name)
     private readonly userCollectionModel: Model<UserCollection>,

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { VocabularyLoader } from '@vocabulary/vocabulary-loader';
 import { VocabularyServiceToken } from '@vocabulary-client/vocabulary.service';
 import { ProviderCollectionServiceToken } from '../service/provider-collection.service';
+import { SyncSheetToProviderCollectionToken } from '@collection-client/service/sync-sheet-to-provider-collection';
 
 describe('ProviderCollectionResolver', () => {
   let resolver: ProviderCollectionResolver;
@@ -21,6 +22,10 @@ describe('ProviderCollectionResolver', () => {
         },
         {
           provide: VocabularyLoader,
+          useValue: {},
+        },
+        {
+          provide: SyncSheetToProviderCollectionToken,
           useValue: {},
         },
       ],

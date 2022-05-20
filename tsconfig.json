@@ -8,6 +8,9 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2017",
     "sourceMap": true,
+    "lib": [
+      "es2019"
+    ],
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
@@ -66,6 +69,12 @@
       ],
       "@graphql/*": [
         "./src/modules/graphql/*"
+      ],
+      "@questionnaire-client/*": [
+        "./src/clients/questionnaire/*"
+      ],
+      "@questionnaire/*": [
+        "./src/modules/questionnaire/*"
       ]
     }
   },

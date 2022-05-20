@@ -1,7 +1,6 @@
 import { CreateProviderCollectionDto } from '@collection-client/entities/create-provider-collection.dto';
 import { ProviderCollection } from '@collection-client/entities/model/provider-collection.model';
 import { ProviderCollectionService } from '@collection-client/service/provider-collection.service';
-import { LIMIT_PER_BULK_WRITE } from '@mongoose/constant';
 import { BulkWriteOperation } from '@mongoose/operation.type';
 import { ObjectId } from '@mongoose/type';
 import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
@@ -13,13 +12,11 @@ import {
 } from '@pagination/cursor-connection-excutor';
 import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
-import { CreateVocabInput } from '@vocabulary-client/entities/input/create-vocab.input';
 import {
   VocabularyService,
   VocabularyServiceToken,
 } from '@vocabulary-client/vocabulary.service';
-import { isEmpty } from 'lodash';
-import { LeanDocument, Model } from 'mongoose';
+import { LeanDocument, Model, Types } from 'mongoose';
 
 export class ProviderCollectionServiceImpl
   implements ProviderCollectionService
@@ -37,113 +34,52 @@ export class ProviderCollectionServiceImpl
     this.logger = new Logger(ProviderCollectionServiceImpl.name);
   }
 
-  createMany(dtos: CreateProviderCollectionDto[]): Promise<void>;
-  createMany(
-    dtosOrVocabulariesKeyByCollectionName: Map<string, CreateVocabInput[]>,
-  ): Promise<void>;
-  async createMany(dtosOrVocabulariesKeyByCollectionName: any): Promise<void> {
-    if (Array.isArray(dtosOrVocabulariesKeyByCollectionName)) {
-      try {
-        const dtos: CreateProviderCollectionDto[] =
-          dtosOrVocabulariesKeyByCollectionName;
-        await this.providerCollectionModel.insertMany(dtos, {
-          limit: LIMIT_PER_BULK_WRITE,
-        });
-      } catch (error) {
-        this.logger.error(error);
-        throw new UnprocessableEntityException(
-          'There are error while processing bulk insert provider collections',
-        );
-      }
-    } else {
-      const vocabulariesKeyByCollectionName: Map<string, CreateVocabInput[]> =
-        dtosOrVocabulariesKeyByCollectionName;
+  async createMany(dtos: CreateProviderCollectionDto[]): Promise<void> {
+    const vocabularyIds = this.extractVocabularyIds(dtos);
 
-      const collectionNames = Array.from(
-        vocabulariesKeyByCollectionName.keys(),
-      );
+    const vocabularies = await this.vocabularyService.findByIds(vocabularyIds);
 
-      const collections = await this.findManyAndCreateIfMissing(
-        collectionNames,
-      );
-
-      for (const collection of collections) {
-        const name = collection.name;
-        if (vocabulariesKeyByCollectionName.has(name)) {
-          const vocabNames = (
-            vocabulariesKeyByCollectionName.get(name) as CreateVocabInput[]
-          ).map((vocab) => vocab.word);
-
-          const vocabs = await this.vocabularyService.findByWords(vocabNames);
-          const vocabIds = vocabs.map((vocab) => vocab._id);
-          collection.vocabularies = vocabIds;
-        }
-      }
-
-      await this.providerCollectionModel.bulkWrite(
-        this.toBulkWriteOperation(collections),
+    if (vocabularyIds.length !== vocabularies.length) {
+      throw new UnprocessableEntityException(
+        'There are some vocabulary ids not found',
       );
     }
+
+    await this.providerCollectionModel.bulkWrite(
+      this.toBulkWriteOperation(dtos),
+    );
   }
 
-  async findManyAndCreateIfMissing(
-    names: string[],
-  ): Promise<(LeanDocument<ProviderCollection> & ObjectId)[]> {
-    const collections = await this.providerCollectionModel
-      .find({
-        name: { $in: names },
-      })
-      .lean()
-      .exec();
+  private extractVocabularyIds(
+    dtos: CreateProviderCollectionDto[],
+  ): Types.ObjectId[] {
+    const vocabularyObjectIds = new Map<string, Types.ObjectId>();
 
-    if (collections.length !== names.length) {
-      const newCollectionDtos = names.reduce(
-        (dtos: CreateProviderCollectionDto[], name: string) => {
-          if (
-            isEmpty(collections) ||
-            collections.some((collection) => collection.name !== name)
-          ) {
-            dtos.push({ name, fee: 0 });
-          }
-          return dtos;
-        },
-        [],
-      );
+    dtos.forEach((dto) => {
+      Object.keys(dto.roadmaps).forEach((day) => {
+        const vocabularyIds = dto.roadmaps[day];
+        vocabularyIds.forEach((id) => {
+          vocabularyObjectIds.set(id.toHexString(), id);
+        });
+      });
+    });
 
-      const newCollections = await this.providerCollectionModel.insertMany(
-        newCollectionDtos,
-        {
-          limit: LIMIT_PER_BULK_WRITE,
-          lean: true,
-        },
-      );
-      return collections.concat(newCollections);
-    }
-
-    return collections;
+    return [...vocabularyObjectIds.values()];
   }
 
   private toBulkWriteOperation(
-    data: (LeanDocument<ProviderCollection> & ObjectId)[],
-  ): BulkWriteOperation[] {
+    data: CreateProviderCollectionDto[],
+  ): BulkWriteOperation<LeanDocument<ProviderCollection> & ObjectId>[] {
     return data.map((item) => {
       return {
-        updateOne: {
-          filter: {
-            _id: item._id,
-          },
-          update: {
-            $set: {
-              vocabularies: item.vocabularies,
-            },
-          },
-          upsert: true,
+        insertOne: {
+          document: item,
         },
       };
     });
   }
 
-  findMany(
+  public findMany(
     args: PaginationArgs,
   ): Promise<GraphqlConnection<LeanDocument<ProviderCollection>>> {
     const query = this.providerCollectionModel

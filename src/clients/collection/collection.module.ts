@@ -1,5 +1,6 @@
+import { SyncSheetToProviderCollectionToken } from './service/sync-sheet-to-provider-collection';
 import { ProviderCollectionServiceImpl } from '@collection/provider-collection.service';
-import { UserCollectionServiceImpl } from '@collection/user-collection.service';
+import { SelfLearningCollectionServiceImpl } from '@collection/self-learning-collection.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from '@user-client/user.module';
@@ -14,8 +15,9 @@ import {
 } from './entities/model/user-collection.model';
 import { ProviderCollectionResolver } from './provider-collection.resolver';
 import { ProviderCollectionServiceToken } from './service/provider-collection.service';
-import { UserCollectionServiceToken } from './service/user-collection.service';
-import { UserCollectionResolver } from './user-collection.resolver';
+import { SelfLearningCollectionServiceToken } from './service/self-learning-collection.service';
+import { SelfLearningCollectionResolver } from './self-learning-collection.resolver';
+import { SyncSheetToProviderCollectionImpl } from '@collection/sync-sheet-to-provider-collection';
 
 @Module({
   imports: [
@@ -28,16 +30,20 @@ import { UserCollectionResolver } from './user-collection.resolver';
   ],
   providers: [
     ProviderCollectionResolver,
-    UserCollectionResolver,
+    SelfLearningCollectionResolver,
     {
       provide: ProviderCollectionServiceToken,
       useClass: ProviderCollectionServiceImpl,
     },
     {
-      provide: UserCollectionServiceToken,
-      useClass: UserCollectionServiceImpl,
+      provide: SelfLearningCollectionServiceToken,
+      useClass: SelfLearningCollectionServiceImpl,
+    },
+    {
+      provide: SyncSheetToProviderCollectionToken,
+      useClass: SyncSheetToProviderCollectionImpl,
     },
   ],
-  exports: [ProviderCollectionServiceToken, UserCollectionServiceToken],
+  exports: [ProviderCollectionServiceToken, SelfLearningCollectionServiceToken],
 })
 export class CollectionModule {}
