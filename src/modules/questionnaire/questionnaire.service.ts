@@ -8,6 +8,8 @@ import {
   VocabularyService,
   VocabularyServiceToken,
 } from '@vocabulary-client/vocabulary.service';
+import { randomInt } from 'crypto';
+import { shuffle } from 'lodash';
 import { LeanDocument } from 'mongoose';
 
 export class QuestionnaireServiceImpl implements QuestionnaireService {
@@ -22,13 +24,16 @@ export class QuestionnaireServiceImpl implements QuestionnaireService {
     const basedQuestionnaires: Record<string, LeanDocument<Questionnaire>[]> =
       {};
 
-    for (const roadmap of roadmaps) {
-      const vocabularies = await this.vocabularyService.findByIds(
-        roadmap.vocabularies,
-      );
-      basedQuestionnaires[roadmap.day] =
-        this.createQuestionnaires(vocabularies);
-    }
+    await Promise.all(
+      roadmaps.map(async (roadmap) => {
+        const vocabularies = await this.vocabularyService.findByIds(
+          roadmap.vocabularies,
+        );
+
+        basedQuestionnaires[roadmap.day] =
+          this.createQuestionnaires(vocabularies);
+      }),
+    );
 
     return basedQuestionnaires;
   }
@@ -38,21 +43,38 @@ export class QuestionnaireServiceImpl implements QuestionnaireService {
   ): LeanDocument<Questionnaire>[] {
     const questionnaires: LeanDocument<Questionnaire>[] = [];
 
-    vocabularies.forEach((vocabulary) => {
+    vocabularies.forEach((vocabulary, answerIndex) => {
       const definitionQuestion: LeanDocument<Questionnaire> = {
         question: vocabulary.definitions[0].meaning,
-        answers: [vocabulary.word],
+        answers: this.generateAnswers(answerIndex, vocabularies),
         correctAnswer: vocabulary.word,
       };
-      // TODO: Develop generate question based on example
-      // const exampleQuestion: LeanDocument<Questionnaire> = {
-      //   question: vocabulary.definitions[0].examples[0],
-      //   answers: [vocabulary.word],
-      //   correctAnswer: vocabulary.word,
-      // };
+
+      // TODO: Develop generate question based on example - current dataset is missing example
+
       questionnaires.push(definitionQuestion);
     });
 
     return questionnaires;
+  }
+
+  private generateAnswers(
+    correctAnswerIndex: number,
+    vocabsToRandom: LeanDocument<Vocabulary & ObjectId>[],
+  ): string[] {
+    const ANSWER_SIZE = 4;
+    const setAnswerIndices = new Set([correctAnswerIndex]);
+    const answers: string[] = [];
+
+    while (setAnswerIndices.size < ANSWER_SIZE) {
+      const randomIndex = randomInt(0, vocabsToRandom.length - 1);
+      setAnswerIndices.add(randomIndex);
+    }
+
+    for (const answerIndex of setAnswerIndices.values()) {
+      answers.push(vocabsToRandom[answerIndex].word);
+    }
+
+    return shuffle(answers);
   }
 }
