@@ -1,16 +1,10 @@
+import { Role } from '@auth/auth.constant';
 import { JwtAuthGuard } from '@auth/jwt.guard';
+import { RequireRoles } from '@auth/require-role.decorator';
 import { Inject, UseGuards } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { FileUploadDto } from '@vocabulary-client/entities/file-upload.dto';
-import { VocabularyType } from '@vocabulary-client/entities/object-type/vocabulary.type';
 import { VocabularyLoader } from '@vocabulary/vocabulary-loader';
 import { GraphQLUpload } from 'graphql-upload';
 import { ProviderCollectionConnection } from './entities/object-type/provider-collection.connection';
@@ -42,13 +36,14 @@ export class ProviderCollectionResolver {
     return this.providerCollectionService.findMany(args);
   }
 
-  @ResolveField('vocabularies', () => [VocabularyType])
-  async getVocabularies(@Parent() providerCollection: ProviderCollectionType) {
-    return this.vocabularyLoader.loadMany(providerCollection.vocabularies);
-  }
+  // TODO: Discuss about how to deal with roadmaps
+  // @ResolveField('roadmaps', () => [VocabularyType])
+  // async getVocabularies(@Parent() providerCollection: ProviderCollectionType) {
+  //   return this.vocabularyLoader.loadMany(providerCollection.roadmaps);
+  // }
 
   @Mutation(() => Boolean, { nullable: true })
-  @UseGuards(JwtAuthGuard)
+  @RequireRoles(Role.ADMIN)
   async uploadVocabularies(
     @Args({
       name: 'file',

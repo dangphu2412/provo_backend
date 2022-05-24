@@ -3,7 +3,8 @@ import {
   Questionnaire,
   QuestionnaireSchema,
 } from '@questionnaire-client/entities/questionnaire.model';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
+import { LearningRoadmap } from './learning-roadmap.model';
 
 @Schema()
 export class ProviderCollection extends Document {
@@ -15,11 +16,11 @@ export class ProviderCollection extends Document {
   @Prop()
   fee: number;
 
-  @Prop({ type: Map, of: [Types.ObjectId] })
-  roadmaps: Map<string, Types.ObjectId[]>;
+  @Prop({ type: Array, of: LearningRoadmap })
+  roadmaps: LearningRoadmap[];
 
   @Prop({ type: Map, of: [QuestionnaireSchema] })
-  basedQuestionnaires: Map<string, Questionnaire[]>;
+  basedQuestionnaires: Record<string, Questionnaire[]>;
 }
 
 export const ProviderCollectionSchema =

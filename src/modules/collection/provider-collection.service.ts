@@ -3,7 +3,7 @@ import { ProviderCollection } from '@collection-client/entities/model/provider-c
 import { ProviderCollectionService } from '@collection-client/service/provider-collection.service';
 import { BulkWriteOperation } from '@mongoose/operation.type';
 import { ObjectId } from '@mongoose/type';
-import { Inject, Logger, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { GraphqlConnection } from '@pagination/connection.factory';
 import {
@@ -13,6 +13,10 @@ import {
 import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-request';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import {
+  QuestionnaireService,
+  QuestionnaireServiceToken,
+} from '@questionnaire-client/questionnaire.service';
+import {
   VocabularyService,
   VocabularyServiceToken,
 } from '@vocabulary-client/vocabulary.service';
@@ -21,8 +25,6 @@ import { LeanDocument, Model, Types } from 'mongoose';
 export class ProviderCollectionServiceImpl
   implements ProviderCollectionService
 {
-  private readonly logger: Logger;
-
   constructor(
     @InjectModel(ProviderCollection.name)
     private readonly providerCollectionModel: Model<ProviderCollection>,
@@ -30,9 +32,9 @@ export class ProviderCollectionServiceImpl
     private readonly cursorConnectionExecutor: CursorConnectionExecutor,
     @Inject(VocabularyServiceToken)
     private readonly vocabularyService: VocabularyService,
-  ) {
-    this.logger = new Logger(ProviderCollectionServiceImpl.name);
-  }
+    @Inject(QuestionnaireServiceToken)
+    private readonly questionnaireService: QuestionnaireService,
+  ) {}
 
   async createMany(dtos: CreateProviderCollectionDto[]): Promise<void> {
     const vocabularyIds = this.extractVocabularyIds(dtos);
@@ -43,6 +45,11 @@ export class ProviderCollectionServiceImpl
       throw new UnprocessableEntityException(
         'There are some vocabulary ids not found',
       );
+    }
+
+    for (const dto of dtos) {
+      dto.basedQuestionnaires =
+        await this.questionnaireService.createBasedQuestionnaires(dto.roadmaps);
     }
 
     await this.providerCollectionModel.bulkWrite(
@@ -56,9 +63,8 @@ export class ProviderCollectionServiceImpl
     const vocabularyObjectIds = new Map<string, Types.ObjectId>();
 
     dtos.forEach((dto) => {
-      Object.keys(dto.roadmaps).forEach((day) => {
-        const vocabularyIds = dto.roadmaps[day];
-        vocabularyIds.forEach((id) => {
+      dto.roadmaps.forEach((roadmap) => {
+        roadmap.vocabularies.forEach((id) => {
           vocabularyObjectIds.set(id.toHexString(), id);
         });
       });

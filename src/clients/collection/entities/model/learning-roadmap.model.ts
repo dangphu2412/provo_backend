@@ -10,7 +10,7 @@ export class LearningRoadmap extends Document {
   day: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Vocabulary.name }] })
-  vocabularies: Vocabulary[];
+  vocabularies: Types.ObjectId[];
 }
 
 export const LearningRoadmapSchema =

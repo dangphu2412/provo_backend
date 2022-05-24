@@ -1,15 +1,8 @@
-import { Types } from 'mongoose';
+import { LeanDocument } from 'mongoose';
+import { LearningRoadmap } from './model/learning-roadmap.model';
 import { IsNumber, IsString } from 'class-validator';
-
-export class CreateLearningRoadmapDto {
-  @IsNumber()
-  day: number;
-
-  @IsString({
-    each: true,
-  })
-  vocabularies: string[];
-}
+import { Exclude } from 'class-transformer';
+import { Questionnaire } from '@questionnaire-client/entities/questionnaire.model';
 
 export class CreateProviderCollectionDto {
   @IsString()
@@ -18,5 +11,9 @@ export class CreateProviderCollectionDto {
   @IsNumber()
   fee: number;
 
-  roadmaps: Record<string, Types.ObjectId[]>;
+  @Exclude()
+  roadmaps: LeanDocument<LearningRoadmap>[];
+
+  @Exclude()
+  basedQuestionnaires: Record<string, LeanDocument<Questionnaire>[]>;
 }

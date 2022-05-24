@@ -18,6 +18,7 @@ import { ProviderCollectionServiceToken } from './service/provider-collection.se
 import { SelfLearningCollectionServiceToken } from './service/self-learning-collection.service';
 import { SelfLearningCollectionResolver } from './self-learning-collection.resolver';
 import { SyncSheetToProviderCollectionImpl } from '@collection/sync-sheet-to-provider-collection';
+import { QuestionnaireModule } from '@questionnaire-client/questionnaire.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SyncSheetToProviderCollectionImpl } from '@collection/sync-sheet-to-pro
     ]),
     VocabularyModule,
     UserModule,
+    QuestionnaireModule,
   ],
   providers: [
     ProviderCollectionResolver,

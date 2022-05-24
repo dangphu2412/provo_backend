@@ -1,11 +1,14 @@
 import { AuthService } from '@auth-client/auth.service';
+import { JwtPayload } from '@auth-client/entities/jwt-payload';
 import { UserCredential } from '@auth-client/entities/user-credential';
 import { GoogleUser } from '@auth-client/google.authenticator';
+import { ObjectId } from '@mongoose/type';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateGoogleUserDto } from '@user-client/dto/create-user.dto';
+import { User } from '@user-client/user.model';
 import { UserService, UserServiceToken } from '@user-client/user.service';
-import { JwtPayload } from '@auth-client/entities/jwt-payload';
+import { LeanDocument } from 'mongoose';
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
@@ -22,19 +25,7 @@ export class AuthServiceImpl implements AuthService {
       throw new NotFoundException('Not found user with email: test@gmail.com');
     }
 
-    return {
-      accessToken: this.jwtService.sign(
-        {
-          sub: user._id.toString(),
-          resourceAccess: {
-            client: ['read'],
-          },
-        },
-        { expiresIn: '10h' },
-      ),
-      refreshToken: this.jwtService.sign({}, { expiresIn: '10d' }),
-      name: 'test user',
-    };
+    return this.generateUserCredential(user);
   }
 
   public async loginByGoogleUser(
@@ -46,12 +37,23 @@ export class AuthServiceImpl implements AuthService {
       user = await this.registerGoogleUser(googleUser);
     }
 
+    return this.generateUserCredential(user);
+  }
+
+  private registerGoogleUser(googleUser: GoogleUser) {
+    const createUserDto = new CreateGoogleUserDto();
+    createUserDto.email = googleUser.email;
+    createUserDto.avatar = googleUser.avatar;
+    createUserDto.fullName = googleUser.fullName;
+    return this.userService.createOne(createUserDto);
+  }
+
+  private async generateUserCredential(
+    user: LeanDocument<User & ObjectId>,
+  ): Promise<UserCredential> {
     const jwtPayload: JwtPayload = {
       sub: user._id.toString(),
-      resourceAccess: {
-        client: ['read'],
-      },
-      realmAccess: {},
+      roles: user.roles,
     };
 
     const [accessToken, refreshToken] = await Promise.all([
@@ -64,13 +66,5 @@ export class AuthServiceImpl implements AuthService {
       refreshToken,
       name: user.name,
     };
-  }
-
-  private registerGoogleUser(googleUser: GoogleUser) {
-    const createUserDto = new CreateGoogleUserDto();
-    createUserDto.email = googleUser.email;
-    createUserDto.avatar = googleUser.avatar;
-    createUserDto.fullName = googleUser.fullName;
-    return this.userService.createOne(createUserDto);
   }
 }

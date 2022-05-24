@@ -12,5 +12,5 @@ export class ProviderCollectionType {
   @Field()
   name: string;
 
-  vocabularies: Types.ObjectId[];
+  roadmaps: Record<string, Types.ObjectId[]>;
 }

@@ -55,7 +55,6 @@ type ProviderCollectionType {
   _id: String!
   fee: Float!
   name: String!
-  vocabularies: [VocabularyType!]!
 }
 
 type ProviderCollectionTypeEdge {

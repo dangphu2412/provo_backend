@@ -1,5 +1,6 @@
+import { Role } from '@auth/auth.constant';
+
 export interface JwtPayload {
   sub: string;
-  realmAccess?: Record<string, string[]>;
-  resourceAccess?: Record<string, string[]>;
+  roles: Role[];
 }

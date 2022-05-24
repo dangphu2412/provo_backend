@@ -54,6 +54,7 @@ describe('AuthService', () => {
       avatarSrc: '',
       credit: 0,
       ownedCollections: [],
+      roles: [],
     };
 
     jest.spyOn(userService, 'findByEmail').mockImplementation(() => {
