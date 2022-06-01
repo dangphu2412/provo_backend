@@ -1,5 +1,6 @@
 import { Role } from '@auth/auth.constant';
-import { UserCollection } from '@collection-client/entities/model/user-collection.model';
+import { SelfLearningCollection } from '@collection-client/entities/model/self-learning-collection.model';
+import { UserPaidCollection } from '@collection-client/entities/model/user-paid-collection.model';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
@@ -17,8 +18,14 @@ export class User extends Document {
   @Prop()
   credit: number;
 
-  @Prop({ type: [Types.ObjectId], ref: UserCollection.name })
+  @Prop({ type: [Types.ObjectId], ref: SelfLearningCollection.name })
   ownedCollections: Types.ObjectId[];
+
+  @Prop({ type: [Types.ObjectId], ref: UserPaidCollection.name })
+  paidCollections: Types.ObjectId[];
+
+  @Prop({ type: Array, of: Types.ObjectId })
+  paidProviderCollectionIds: Types.ObjectId[];
 
   @Prop({
     type: [String],

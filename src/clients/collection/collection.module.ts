@@ -1,3 +1,4 @@
+import { UserPaidCollectionServiceToken } from './service/user-paid-collection.service';
 import { SyncSheetToProviderCollectionToken } from './service/sync-sheet-to-provider-collection';
 import { ProviderCollectionServiceImpl } from '@collection/provider-collection.service';
 import { SelfLearningCollectionServiceImpl } from '@collection/self-learning-collection.service';
@@ -10,9 +11,9 @@ import {
   ProviderCollectionSchema,
 } from './entities/model/provider-collection.model';
 import {
-  UserCollection,
-  UserCollectionSchema,
-} from './entities/model/user-collection.model';
+  SelfLearningCollection,
+  SelfLearningCollectionSchema,
+} from './entities/model/self-learning-collection.model';
 import { ProviderCollectionResolver } from './provider-collection.resolver';
 import { ProviderCollectionServiceToken } from './service/provider-collection.service';
 import { SelfLearningCollectionServiceToken } from './service/self-learning-collection.service';
@@ -24,7 +25,10 @@ import { QuestionnaireModule } from '@questionnaire-client/questionnaire.module'
   imports: [
     MongooseModule.forFeature([
       { name: ProviderCollection.name, schema: ProviderCollectionSchema },
-      { name: UserCollection.name, schema: UserCollectionSchema },
+      {
+        name: SelfLearningCollection.name,
+        schema: SelfLearningCollectionSchema,
+      },
     ]),
     VocabularyModule,
     UserModule,
@@ -44,6 +48,10 @@ import { QuestionnaireModule } from '@questionnaire-client/questionnaire.module'
     {
       provide: SyncSheetToProviderCollectionToken,
       useClass: SyncSheetToProviderCollectionImpl,
+    },
+    {
+      provide: UserPaidCollectionServiceToken,
+      useClass: ProviderCollectionServiceImpl,
     },
   ],
   exports: [ProviderCollectionServiceToken, SelfLearningCollectionServiceToken],

@@ -10,6 +10,7 @@ export interface ProviderCollectionService {
   findMany(
     args: PaginationArgs,
   ): Promise<GraphqlConnection<LeanDocument<ProviderCollection>>>;
+  findById(id: string): Promise<LeanDocument<ProviderCollection> | null>;
 
   createMany(collectionDtos: CreateProviderCollectionDto[]): Promise<void>;
 }

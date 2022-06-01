@@ -4,7 +4,7 @@ import { CreateCollectionInput } from '@collection-client/entities/input/create-
 import { GraphqlConnection } from '@pagination/connection.factory';
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { LeanDocument } from 'mongoose';
-import { UserCollection } from '../entities/model/user-collection.model';
+import { SelfLearningCollection } from '../entities/model/self-learning-collection.model';
 
 export const SelfLearningCollectionServiceToken =
   'SelfLearningCollectionServiceToken';
@@ -12,13 +12,15 @@ export const SelfLearningCollectionServiceToken =
 export interface SelfLearningCollectionService {
   findMany(
     args: PaginationArgs,
-  ): Promise<GraphqlConnection<LeanDocument<UserCollection>>>;
-  createOne(input: CreateCollectionInput): Promise<UserCollection & ObjectId>;
+  ): Promise<GraphqlConnection<LeanDocument<SelfLearningCollection>>>;
+  createOne(
+    input: CreateCollectionInput,
+  ): Promise<SelfLearningCollection & ObjectId>;
   addVocabularyToCollection(
     input: AddVocabularyToCollectionInput,
   ): Promise<void>;
   assignCollectionToUser(
-    collection: UserCollection,
+    collection: SelfLearningCollection,
     userId: string,
   ): Promise<void>;
 }

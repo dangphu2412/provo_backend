@@ -6,7 +6,7 @@ import {
 import { Document } from 'mongoose';
 
 @Schema()
-export class UserCollection extends Document {
+export class SelfLearningCollection extends Document {
   @Prop()
   name: string;
 
@@ -16,5 +16,6 @@ export class UserCollection extends Document {
   vocabularies: Vocabulary[];
 }
 
-export const UserCollectionSchema =
-  SchemaFactory.createForClass(UserCollection);
+export const SelfLearningCollectionSchema = SchemaFactory.createForClass(
+  SelfLearningCollection,
+);

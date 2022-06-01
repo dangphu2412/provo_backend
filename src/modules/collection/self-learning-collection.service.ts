@@ -12,15 +12,15 @@ import { CursorConnectionRequestBuilder } from '@pagination/cursor-connection-re
 import { PaginationArgs } from '@pagination/dto/pagination-args';
 import { instanceToPlain } from 'class-transformer';
 import { LeanDocument, Model } from 'mongoose';
-import { UserCollection } from '@collection-client/entities/model/user-collection.model';
+import { SelfLearningCollection } from '@collection-client/entities/model/self-learning-collection.model';
 import { UserService, UserServiceToken } from '@user-client/user.service';
 
 export class SelfLearningCollectionServiceImpl
   implements SelfLearningCollectionService
 {
   constructor(
-    @InjectModel(UserCollection.name)
-    private readonly userCollectionModel: Model<UserCollection>,
+    @InjectModel(SelfLearningCollection.name)
+    private readonly userCollectionModel: Model<SelfLearningCollection>,
     @Inject(CursorConnectionExecutorToken)
     private readonly cursorConnectionExecutor: CursorConnectionExecutor,
     @Inject(UserServiceToken)
@@ -54,7 +54,7 @@ export class SelfLearningCollectionServiceImpl
   }
 
   public async assignCollectionToUser(
-    collection: UserCollection,
+    collection: SelfLearningCollection,
     userId: string,
   ): Promise<void> {
     const user = await this.userService.findById(userId);
@@ -68,8 +68,10 @@ export class SelfLearningCollectionServiceImpl
 
   public async findMany(
     args: PaginationArgs,
-  ): Promise<GraphqlConnection<LeanDocument<UserCollection>>> {
-    const query = this.userCollectionModel.find<UserCollection>().lean();
+  ): Promise<GraphqlConnection<LeanDocument<SelfLearningCollection>>> {
+    const query = this.userCollectionModel
+      .find<SelfLearningCollection>()
+      .lean();
 
     const request = new CursorConnectionRequestBuilder({
       query,

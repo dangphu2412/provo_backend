@@ -99,4 +99,16 @@ export class ProviderCollectionServiceImpl
 
     return this.cursorConnectionExecutor.buildConnection(request);
   }
+
+  public findById(
+    id: string,
+  ): Promise<LeanDocument<ProviderCollection> | null> {
+    const objectId = new Types.ObjectId(id);
+    return this.providerCollectionModel
+      .findOne({
+        _id: objectId,
+      })
+      .lean()
+      .exec();
+  }
 }

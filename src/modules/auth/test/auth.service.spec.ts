@@ -54,6 +54,8 @@ describe('AuthService', () => {
       avatarSrc: '',
       credit: 0,
       ownedCollections: [],
+      paidCollections: [],
+      paidProviderCollectionIds: [],
       roles: [],
     };
 
