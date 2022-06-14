@@ -2,10 +2,10 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserServiceToken } from '@user-client/user.service';
 import { Types, LeanDocument } from 'mongoose';
-import { UserCredential } from '../../../clients/auth/entities/user-credential';
-import { User } from '../../../clients/user/user.model';
+import { UserCredential } from '@auth-client/entities/user-credential';
+import { User } from '@user-client/user.model';
 import { ObjectId } from '@mongoose/type';
-import { UserServiceImpl } from '../../user/user.service';
+import { UserServiceImpl } from '@user/user.service';
 import { AuthServiceImpl } from '../auth.service';
 
 describe('AuthService', () => {
@@ -68,7 +68,7 @@ describe('AuthService', () => {
       .mockImplementation(() => Promise.resolve('token'));
 
     expect(
-      await service.loginByGoogleUser({
+      await service.login({
         sub: '',
         fullName: '',
         email: '',

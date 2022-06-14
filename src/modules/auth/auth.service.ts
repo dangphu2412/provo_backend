@@ -9,6 +9,7 @@ import { CreateGoogleUserDto } from '@user-client/dto/create-user.dto';
 import { User } from '@user-client/user.model';
 import { UserService, UserServiceToken } from '@user-client/user.service';
 import { LeanDocument } from 'mongoose';
+import { isEmpty } from 'lodash';
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
@@ -18,23 +19,27 @@ export class AuthServiceImpl implements AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  public async mockLoginByGoogleUser(): Promise<UserCredential> {
-    const user = await this.userService.findByEmail('test@gmail.com');
+  public async login(): Promise<UserCredential>;
+  public async login(googleUser: GoogleUser): Promise<UserCredential>;
+  public async login(userRequest?: any) {
+    let user;
 
-    if (!user) {
-      throw new NotFoundException('Not found user with email: test@gmail.com');
-    }
+    if (isEmpty(userRequest)) {
+      user = await this.userService.findByEmail('test@gmail.com');
 
-    return this.generateUserCredential(user);
-  }
+      if (!user) {
+        throw new NotFoundException(
+          'Not found user with email: test@gmail.com',
+        );
+      }
+    } else {
+      user = await this.userService.findByEmail(
+        (userRequest as GoogleUser).email,
+      );
 
-  public async loginByGoogleUser(
-    googleUser: GoogleUser,
-  ): Promise<UserCredential> {
-    let user = await this.userService.findByEmail(googleUser.email);
-
-    if (!user) {
-      user = await this.registerGoogleUser(googleUser);
+      if (!user) {
+        user = await this.registerGoogleUser(userRequest as GoogleUser);
+      }
     }
 
     return this.generateUserCredential(user);

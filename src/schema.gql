@@ -34,7 +34,7 @@ type Mutation {
   createSelfCollection(createCollectionInput: CreateCollectionInput!): Boolean!
   createVocabularies(vocabularies: [CreateVocabInput!]!): Boolean
   getTestCredential: UserCredential!
-  loginByGoogleAccessToken(idToken: String!): UserCredential!
+  login(idToken: String!): UserCredential!
   uploadVocabularies(file: Upload!): Boolean
 }
 

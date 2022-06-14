@@ -8,7 +8,8 @@ import { LeanDocument, Model } from 'mongoose';
 
 export class UserServiceImpl implements UserService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<User>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
   ) {}
 
   createOne(dto: CreateGoogleUserDto) {

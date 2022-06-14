@@ -17,16 +17,16 @@ export class AuthResolver {
   ) {}
 
   @Mutation(() => UserCredential)
-  async loginByGoogleAccessToken(
+  async login(
     @Args({ name: 'idToken', type: () => String }) idToken: string,
   ): Promise<UserCredential> {
     const googleUser = await this.googleAuthenticator.verify(idToken);
 
-    return this.authService.loginByGoogleUser(googleUser);
+    return this.authService.login(googleUser);
   }
 
   @Mutation(() => UserCredential)
   getTestCredential(): Promise<UserCredential> {
-    return this.authService.mockLoginByGoogleUser();
+    return this.authService.login();
   }
 }
