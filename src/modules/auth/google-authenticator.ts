@@ -36,7 +36,7 @@ export class GoogleAuthenticatorImpl implements GoogleAuthenticator {
 
     if (!payload) {
       throw new UnprocessableEntityException(
-        'Invalid idToken provided. Please check your credentials',
+        'Missing payload in Google login ticket',
       );
     }
 
@@ -58,7 +58,7 @@ export class GoogleAuthenticatorImpl implements GoogleAuthenticator {
       });
     } catch (error) {
       throw new UnprocessableEntityException(
-        'Invalid idToken provided. Please check your credentials',
+        'Token may expired or invalid. Please check your credentials or your idToken format',
       );
     }
   }
