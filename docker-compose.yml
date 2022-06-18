@@ -24,9 +24,9 @@ services:
     networks:
       - internal_provo
     volumes:
-      - hostPath:containerPath:rw
-        hostPath:./data
-        containerPath:/data/db
+      - ./data/mongo:/data/db
 
 volumes:
   data:
+networks:
+  - internal_provo
